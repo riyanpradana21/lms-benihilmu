@@ -25,7 +25,7 @@ class KtsAndVerificationTest extends TestCase
     public function test_public_can_verify_active_student_via_token(): void
     {
         $student = Student::where('student_number', '202401001')->first();
-        $response = $this->get('/verify/student/' . $student->student_number);
+        $response = $this->get('/verify/student/'.$student->student_number);
 
         $response->assertStatus(200);
         $response->assertSee('Status: Terverifikasi Aktif');

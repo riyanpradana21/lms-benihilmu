@@ -20,7 +20,7 @@
         @forelse($quizzes as $quiz)
             @php
                 $quizAttempts = $attempts->get($quiz->id, collect());
-                $completedAttempts = $quizAttempts->where('status', 'completed');
+                $completedAttempts = $quizAttempts->whereIn('status', ['submitted', 'graded']);
                 $activeAttempt = $quizAttempts->firstWhere('status', 'in_progress');
                 $bestScore = $completedAttempts->max('score');
             @endphp

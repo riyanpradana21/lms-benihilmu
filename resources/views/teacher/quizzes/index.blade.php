@@ -57,9 +57,12 @@
                     </div>
                 </div>
 
-                <div class="mt-6 pt-4 border-t border-slate-100">
-                    <a href="{{ route('teacher.quizzes.attempts', $quiz) }}" class="inline-flex items-center justify-center w-full py-2.5 px-4 text-xs font-semibold rounded-xl bg-slate-900 hover:bg-slate-800 text-white shadow-sm transition">
-                        <span>Lihat Hasil & Jawaban Siswa ({{ $quiz->attempts_count }}) &rarr;</span>
+                <div class="mt-6 pt-4 border-t border-slate-100 grid grid-cols-2 gap-2">
+                    <a href="{{ route('teacher.quizzes.questions', $quiz) }}" class="inline-flex items-center justify-center py-2 px-3 text-xs font-semibold rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm transition">
+                        <span>Kelola Soal ({{ $quiz->questions_count }})</span>
+                    </a>
+                    <a href="{{ route('teacher.quizzes.attempts', $quiz) }}" class="inline-flex items-center justify-center py-2 px-3 text-xs font-semibold rounded-xl bg-slate-900 hover:bg-slate-800 text-white shadow-sm transition">
+                        <span>Hasil ({{ $quiz->attempts_count }}) &rarr;</span>
                     </a>
                 </div>
             </div>

@@ -95,7 +95,7 @@
                         @endif
                     </div>
 
-                    <p class="text-sm text-slate-800 leading-relaxed font-medium mb-4">{!! nl2br(e($q->question_text)) !!}</p>
+                    <div class="text-sm text-slate-800 leading-relaxed font-medium mb-4">@richContent($q->question_text)</div>
 
                     @if($q->options->isNotEmpty())
                         <div class="space-y-2 text-xs">

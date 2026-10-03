@@ -56,6 +56,13 @@ class TeacherGradeController extends Controller
 
         abort_unless($teacher->courses()->whereKey($validated['course_id'])->exists(), 403);
 
+        $existingWeight = (float) GradeComponent::where('course_id', $validated['course_id'])->sum('weight');
+        if (($existingWeight + (float) $validated['weight']) > 100.0) {
+            $remaining = max(0, 100.0 - $existingWeight);
+
+            return back()->withInput()->with('error', 'Total bobot komponen nilai tidak boleh melebihi 100%. Sisa bobot yang tersedia untuk kursus ini: '.$remaining.'%.');
+        }
+
         GradeComponent::create($validated);
 
         return back()->with('success', 'Komponen nilai baru berhasil ditambahkan.');

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\AcademicYear;
 use App\Models\AuditLog;
 use App\Models\ClassStudent;
+use App\Models\Guardian;
 use App\Models\SchoolClass;
 use App\Models\Student;
 use App\Models\User;
@@ -65,9 +66,22 @@ class StudentController extends Controller
             'address' => ['nullable', 'string'],
             'phone' => ['nullable', 'string'],
             'class_id' => ['nullable', 'exists:school_classes,id'],
+            'guardian_name' => ['nullable', 'required_with:guardian_email', 'string', 'max:255'],
+            'guardian_email' => ['nullable', 'required_with:guardian_name', 'email', 'unique:users,email'],
+            'guardian_password' => ['nullable', 'required_with:guardian_email', 'string', 'min:8'],
+            'guardian_phone' => ['nullable', 'string', 'max:50'],
+            'guardian_relationship' => ['nullable', 'required_with:guardian_email', 'in:father,mother,guardian'],
         ]);
 
         $activeYear = AcademicYear::where('is_active', true)->first();
+
+        if (! empty($validated['class_id'])) {
+            $schoolClass = SchoolClass::whereKey($validated['class_id'])
+                ->when($activeYear, fn ($query) => $query->where('academic_year_id', $activeYear->id))
+                ->first();
+            abort_unless($activeYear && $schoolClass, 422, 'Kelas harus berasal dari tahun ajaran aktif.');
+            abort_if($schoolClass->students()->count() >= $schoolClass->capacity, 422, 'Kapasitas kelas yang dipilih sudah penuh.');
+        }
 
         DB::transaction(function () use ($validated, $activeYear, &$student): void {
             $user = User::create([
@@ -97,6 +111,23 @@ class StudentController extends Controller
                     'student_id' => $student->id,
                     'academic_year_id' => $activeYear->id,
                 ]);
+            }
+
+            if (! empty($validated['guardian_email'])) {
+                $parentUser = User::create([
+                    'name' => $validated['guardian_name'],
+                    'email' => $validated['guardian_email'],
+                    'password' => Hash::make($validated['guardian_password']),
+                ]);
+                $parentUser->assignRole(Role::firstOrCreate(['name' => 'parent']));
+                $guardian = Guardian::create([
+                    'user_id' => $parentUser->id,
+                    'name' => $validated['guardian_name'],
+                    'phone' => $validated['guardian_phone'] ?? null,
+                    'relationship' => $validated['guardian_relationship'],
+                    'is_active' => true,
+                ]);
+                $guardian->students()->attach($student->id);
             }
         });
 

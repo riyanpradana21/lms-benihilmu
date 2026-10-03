@@ -27,7 +27,10 @@
 
 @section('content')
 <div class="space-y-6">
-    <div><p class="text-sm text-slate-500">Ruang pembelajaran dan pemantauan</p><h2 class="mt-1 text-2xl font-bold text-slate-900">{{ $title }}</h2><p class="mt-2 text-sm text-slate-500">{{ $description }}</p></div>
+    <div class="flex flex-wrap items-end justify-between gap-3"><div><p class="text-sm text-slate-500">Ruang pembelajaran dan pemantauan</p><h2 class="mt-1 text-2xl font-bold text-slate-900">{{ $title }}</h2><p class="mt-2 text-sm text-slate-500">{{ $description }}</p></div>@if($title === 'Jadwal Pelajaran')<a href="{{ route('student.schedule.print') }}" class="rounded-lg bg-blue-950 px-4 py-2 text-sm font-semibold text-white print:hidden">Cetak / Simpan PDF</a>@endif</div>
     <section class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm"><div class="overflow-x-auto"><table class="min-w-full text-left text-sm"><thead class="bg-slate-50 text-xs uppercase tracking-wide text-slate-500"><tr>@foreach($columns as $column)<th class="px-5 py-3">{{ $column }}</th>@endforeach</tr></thead><tbody class="divide-y divide-slate-100">@forelse($rows as $row)<tr>@foreach($columns as $key => $column)<td class="px-5 py-4 {{ $loop->first ? 'font-medium text-slate-900' : 'text-slate-600' }}">{{ $value($row, $key) }}</td>@endforeach</tr>@empty<tr><td colspan="{{ count($columns) }}" class="px-5 py-14 text-center"><p class="font-semibold text-slate-900">Belum ada data</p><p class="mt-2 text-sm text-slate-500">{{ $empty }}</p></td></tr>@endforelse</tbody></table></div><div class="border-t border-slate-100 px-5 py-4">{{ $rows->links() }}</div></section>
 </div>
+@if($title === 'Jadwal Pelajaran')
+<style>@media print { nav, aside, header, footer, button, .pagination { display: none !important; } body { background: white !important; } main { padding: 0 !important; } section { border: 0 !important; box-shadow: none !important; } }</style>
+@endif
 @endsection

@@ -12,6 +12,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 use Spatie\Permission\Models\Role;
 
@@ -97,6 +98,32 @@ class TeacherController extends Controller
         AuditLog::log('toggle_teacher_status', $teacher, null, ['is_active' => $teacher->is_active]);
 
         return back()->with('success', 'Status keaktifan guru berhasil diubah.');
+    }
+
+    public function update(Request $request, Teacher $teacher): RedirectResponse
+    {
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', Rule::unique('users', 'email')->ignore($teacher->user_id)],
+            'employee_number' => ['nullable', 'string', Rule::unique('teachers', 'employee_number')->ignore($teacher->id)],
+            'phone' => ['nullable', 'string', 'max:50'],
+            'address' => ['nullable', 'string', 'max:2000'],
+            'gender' => ['required', 'in:male,female'],
+            'specialization' => ['nullable', 'string', 'max:255'],
+            'is_active' => ['required', 'boolean'],
+        ]);
+
+        DB::transaction(function () use ($teacher, $validated): void {
+            $oldValues = $teacher->load('user')->toArray();
+            $teacher->user->update([
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+            ]);
+            $teacher->update(collect($validated)->except(['name', 'email'])->all());
+            AuditLog::log('update_teacher', $teacher, $oldValues, $teacher->fresh()->load('user')->toArray());
+        });
+
+        return back()->with('success', 'Data guru berhasil diperbarui.');
     }
 
     public function updateSubjects(Request $request, Teacher $teacher): RedirectResponse

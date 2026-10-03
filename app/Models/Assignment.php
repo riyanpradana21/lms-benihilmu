@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Assignment extends Model
@@ -44,5 +45,10 @@ class Assignment extends Model
     public function submissions(): HasMany
     {
         return $this->hasMany(AssignmentSubmission::class);
+    }
+
+    public function media(): MorphMany
+    {
+        return $this->morphMany(Media::class, 'model');
     }
 }

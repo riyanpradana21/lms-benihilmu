@@ -56,7 +56,7 @@
                                 @endif
                             </td>
                             <td class="px-6 py-4">
-                                @if($att->status === 'completed')
+                                @if(in_array($att->status, ['submitted', 'graded'], true))
                                     <span class="inline-flex items-center rounded-full bg-emerald-50 px-2.5 py-0.5 text-[10px] font-bold text-emerald-700">
                                         Selesai
                                     </span>
@@ -70,6 +70,12 @@
                                 <span class="text-base font-extrabold {{ $isPassed ? 'text-emerald-600' : 'text-rose-600' }}">
                                     {{ $att->score }}
                                 </span>
+                                @if($att->is_locked && $att->status === 'in_progress')
+                                    <form method="POST" action="{{ route('teacher.quizzes.attempts.open-access', [$quiz, $att]) }}" class="mt-2">
+                                        @csrf @method('PATCH')
+                                        <button class="rounded-lg bg-indigo-600 px-3 py-1.5 text-[10px] font-semibold text-white">Open Access</button>
+                                    </form>
+                                @endif
                             </td>
                         </tr>
                     @empty

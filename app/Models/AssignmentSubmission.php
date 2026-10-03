@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class AssignmentSubmission extends Model
 {
@@ -54,5 +55,10 @@ class AssignmentSubmission extends Model
     public function feedback(): HasOne
     {
         return $this->hasOne(SubmissionFeedback::class, 'submission_id');
+    }
+
+    public function media(): MorphMany
+    {
+        return $this->morphMany(Media::class, 'model');
     }
 }

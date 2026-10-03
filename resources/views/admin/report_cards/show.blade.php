@@ -28,9 +28,9 @@
                         S
                     </div>
                     <div>
-                        <h2 class="text-xl font-black uppercase tracking-wider text-slate-900">{{ $institution?->name ?? 'SMA NUSANTARA DIGITAL' }}</h2>
-                        <p class="text-xs text-slate-600">{{ $institution?->address ?? 'Jl. Pendidikan Merdeka No. 45, Jakarta' }}</p>
-                        <p class="text-[11px] text-slate-500">Telepon: {{ $institution?->phone ?? '021-7654321' }} &bull; Website: {{ $institution?->website ?? 'https://smanusantara.sch.id' }}</p>
+                        <h2 class="text-xl font-black uppercase tracking-wider text-slate-900">{{ $institution?->name ?? 'Nama Sekolah' }}</h2>
+                        <p class="text-xs text-slate-600">{{ $institution?->address ?? 'Alamat sekolah belum diatur' }}</p>
+                        <p class="text-[11px] text-slate-500">Telepon: {{ $institution?->phone ?? '—' }} &bull; Website: {{ $institution?->website ?? '—' }}</p>
                     </div>
                 </div>
                 <div class="text-right">
@@ -41,7 +41,7 @@
             <!-- Judul Laporan -->
             <div class="text-center space-y-1">
                 <h3 class="text-base font-bold uppercase tracking-widest text-slate-900">Laporan Capaian Hasil Belajar Siswa</h3>
-                <p class="text-xs text-slate-500">Tahun Ajaran {{ $reportCard->semester?->academicYear?->name ?? '2024/2025' }} &bull; Semester {{ $reportCard->semester?->name ?? 'Ganjil' }}</p>
+                <p class="text-xs text-slate-500">Tahun Ajaran {{ $reportCard->semester?->academicYear?->name ?? '—' }} &bull; Semester {{ $reportCard->semester?->name ?? '—' }}</p>
             </div>
 
             <!-- Identitas Siswa Grid -->
@@ -63,7 +63,7 @@
                     </div>
                     <div class="flex">
                         <span class="w-32 text-slate-500">Wali Kelas:</span>
-                        <span class="font-semibold text-slate-800">{{ $reportCard->schoolClass?->homeroomTeacher?->name ?? 'Budi Santoso, M.Pd.' }}</span>
+                        <span class="font-semibold text-slate-800">{{ $reportCard->schoolClass?->homeroomTeacher?->name ?? '—' }}</span>
                     </div>
                 </div>
             </div>
@@ -76,7 +76,10 @@
                         <tr>
                             <th class="p-3 border-r border-slate-300 w-12 text-center">No</th>
                             <th class="p-3 border-r border-slate-300">Mata Pelajaran</th>
-                            <th class="p-3 border-r border-slate-300 w-20 text-center">KKM</th>
+                            <th class="p-3 border-r border-slate-300 text-center">Tugas</th>
+                            <th class="p-3 border-r border-slate-300 text-center">Kuis</th>
+                            <th class="p-3 border-r border-slate-300 text-center">PTS</th>
+                            <th class="p-3 border-r border-slate-300 text-center">PAS</th>
                             <th class="p-3 border-r border-slate-300 w-24 text-center">Nilai Akhir</th>
                             <th class="p-3 w-40 text-center">Predikat</th>
                         </tr>
@@ -89,21 +92,24 @@
                                     {{ $sub['name'] }}
                                     <span class="text-[10px] text-slate-400 block font-normal">{{ $sub['teacher'] }}</span>
                                 </td>
-                                <td class="p-3 border-r border-slate-200 text-center font-mono">{{ $sub['kkm'] }}</td>
-                                <td class="p-3 border-r border-slate-200 text-center font-bold text-slate-900 font-mono">{{ $sub['score'] }}</td>
+                                <td class="p-3 border-r border-slate-200 text-center font-mono">{{ $sub['components']['assignment'] ?? '—' }}</td>
+                                <td class="p-3 border-r border-slate-200 text-center font-mono">{{ $sub['components']['quiz'] ?? '—' }}</td>
+                                <td class="p-3 border-r border-slate-200 text-center font-mono">{{ $sub['components']['midterm'] ?? '—' }}</td>
+                                <td class="p-3 border-r border-slate-200 text-center font-mono">{{ $sub['components']['final'] ?? '—' }}</td>
+                                <td class="p-3 border-r border-slate-200 text-center font-bold text-slate-900 font-mono">{{ $sub['score'] ?? '—' }}</td>
                                 <td class="p-3 text-center font-semibold text-slate-700">{{ $sub['predicate'] }}</td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="p-6 text-center text-slate-400">Belum ada mata pelajaran tercatat.</td>
+                                <td colspan="8" class="p-6 text-center text-slate-400">Belum ada mata pelajaran tercatat.</td>
                             </tr>
                         @endforelse
                     </tbody>
                     <tfoot class="bg-slate-50 font-bold border-t border-slate-300">
                         <tr>
-                            <td colspan="3" class="p-3 border-r border-slate-300 text-right">Rata-rata Nilai Siswa:</td>
+                            <td colspan="6" class="p-3 border-r border-slate-300 text-right">Rata-rata Nilai Siswa:</td>
                             <td class="p-3 border-r border-slate-300 text-center text-indigo-700 font-mono text-sm">{{ $averageScore }}</td>
-                            <td class="p-3 text-center">Peringkat: Ke-{{ $reportCard->rank ?? 1 }}</td>
+                            <td class="p-3 text-center">Peringkat: {{ $reportCard->rank ? 'Ke-'.$reportCard->rank : '—' }}</td>
                         </tr>
                     </tfoot>
                 </table>
@@ -136,7 +142,7 @@
                 <div>
                     <h4 class="font-bold uppercase tracking-wider text-slate-700 mb-2">C. Catatan Perkembangan Belajar</h4>
                     <div class="p-3.5 border border-slate-300 rounded-lg min-h-[95px] text-slate-600 leading-relaxed italic bg-slate-50">
-                        "{{ $reportCard->teacher_notes ?: 'Ananda menunjukkan antusiasme yang sangat baik dan konsisten dalam mengikuti kegiatan akademik serta modul e-learning.' }}"
+                        {{ $reportCard->teacher_notes ?: 'Belum ada catatan wali kelas.' }}
                     </div>
                 </div>
             </div>
@@ -151,17 +157,17 @@
                 </div>
 
                 <div>
-                    <p class="text-slate-500">Jakarta, {{ date('d F Y') }}</p>
+                    <p class="text-slate-500">{{ now()->translatedFormat('d F Y') }}</p>
                     <p class="text-slate-700 font-medium">Wali Kelas</p>
                     <div class="h-20"></div>
-                    <p class="border-t border-slate-400 mx-6 pt-1 font-semibold text-slate-800">{{ $reportCard->schoolClass?->homeroomTeacher?->name ?? 'Budi Santoso, M.Pd.' }}</p>
+                    <p class="border-t border-slate-400 mx-6 pt-1 font-semibold text-slate-800">{{ $reportCard->schoolClass?->homeroomTeacher?->name ?? '—' }}</p>
                 </div>
 
                 <div>
                     <p class="text-slate-500">&nbsp;</p>
                     <p class="text-slate-700 font-medium">Kepala Sekolah</p>
                     <div class="h-20"></div>
-                    <p class="border-t border-slate-400 mx-6 pt-1 font-semibold text-slate-800">Drs. H. Mulyadi, M.M.</p>
+                    <p class="border-t border-slate-400 mx-6 pt-1 font-semibold text-slate-800">{{ $institution?->principal_name ?? '—' }}</p>
                 </div>
             </div>
         </div>

@@ -37,4 +37,10 @@ class Schedule extends Model
     {
         return $this->belongsTo(AcademicYear::class);
     }
+
+    public function scopeOrderByDayAndTime($query)
+    {
+        return $query->orderByRaw("CASE day_of_week WHEN 'monday' THEN 1 WHEN 'tuesday' THEN 2 WHEN 'wednesday' THEN 3 WHEN 'thursday' THEN 4 WHEN 'friday' THEN 5 WHEN 'saturday' THEN 6 ELSE 7 END")
+            ->orderBy('start_time');
+    }
 }

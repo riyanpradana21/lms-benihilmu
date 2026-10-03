@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Assignment;
 use App\Models\Course;
 use App\Models\Guardian;
+use App\Models\SchoolClass;
 use App\Models\Student;
 use App\Models\Teacher;
 use Illuminate\Http\RedirectResponse;
@@ -24,7 +25,9 @@ class RoleDashboardController extends Controller
             default => [],
         };
 
-        return view('role.dashboard', compact('role', 'data'));
+        $canManageExams = $role === 'teacher' && SchoolClass::where('homeroom_teacher_id', $user->id)->exists();
+
+        return view('role.dashboard', compact('role', 'data', 'canManageExams'));
     }
 
     private function teacherData(?Teacher $teacher): array

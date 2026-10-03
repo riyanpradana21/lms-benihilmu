@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AcademicYear;
 use App\Models\Assignment;
 use App\Models\AssignmentSubmission;
-use App\Models\Attendance;
+use App\Models\AttendanceSession;
 use App\Models\Course;
 use App\Models\QuestionBank;
 use App\Models\Quiz;
 use App\Models\Schedule;
 use App\Models\Student;
-use App\Models\StudentGrade;
 use App\Models\SubmissionFeedback;
+use App\Support\DirectMedia;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -39,7 +40,7 @@ class LearningController extends Controller
         $student = Auth::user()->student;
         $classIds = $student?->schoolClasses()->pluck('school_classes.id') ?? collect();
         $courseIds = Course::whereIn('school_class_id', $classIds)->pluck('id');
-        $assignments = Assignment::with(['course.subject', 'submissions' => fn ($query) => $query->where('student_id', $student?->id)])
+        $assignments = Assignment::with(['course.subject', 'submissions' => fn ($query) => $query->where('student_id', $student?->id)->with('feedback')])
             ->whereIn('course_id', $courseIds)
             ->where('is_published', true)
             ->latest('deadline')
@@ -55,9 +56,11 @@ class LearningController extends Controller
 
         $assignment->load('course');
         abort_unless($student->schoolClasses()->whereKey($assignment->course->school_class_id)->exists(), 403);
+        abort_unless($assignment->is_published, 404);
 
         $validated = $request->validate([
-            'content' => ['required', 'string', 'min:2', 'max:50000'],
+            'content' => ['nullable', 'string', 'min:2', 'max:50000', 'required_without:media'],
+            'media' => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp,mp4,webm', 'max:20480'],
         ]);
 
         $existing = AssignmentSubmission::where('assignment_id', $assignment->id)
@@ -68,11 +71,11 @@ class LearningController extends Controller
         abort_if($existing?->status === 'graded', 422, 'Submission yang sudah dinilai tidak dapat diganti.');
         abort_if($isLate && ! $assignment->allow_late, 422, 'Batas waktu pengumpulan sudah lewat.');
 
-        DB::transaction(function () use ($assignment, $student, $validated, $isLate): void {
-            AssignmentSubmission::updateOrCreate(
+        DB::transaction(function () use ($assignment, $student, $validated, $isLate, $request): void {
+            $submission = AssignmentSubmission::updateOrCreate(
                 ['assignment_id' => $assignment->id, 'student_id' => $student->id],
                 [
-                    'content' => $validated['content'],
+                    'content' => $validated['content'] ?? '',
                     'submitted_at' => now(),
                     'is_late' => $isLate,
                     'status' => 'submitted',
@@ -81,6 +84,9 @@ class LearningController extends Controller
                     'graded_by' => null,
                 ],
             );
+            if ($request->hasFile('media')) {
+                $submission->update(['content' => $submission->content.DirectMedia::attach($submission, $request->file('media'), 'submission-media')]);
+            }
         });
 
         return back()->with('success', 'Tugas berhasil dikumpulkan.');
@@ -156,50 +162,51 @@ class LearningController extends Controller
     public function studentGrades(): View
     {
         $student = Auth::user()->student;
-        $grades = StudentGrade::with(['course.subject', 'gradeComponent'])
-            ->where('student_id', $student?->id)
-            ->latest('graded_at')
+        abort_unless($student, 403, 'Profil siswa tidak ditemukan.');
+
+        $activeYear = AcademicYear::where('is_active', true)->first();
+        $classIds = $student->schoolClasses()
+            ->when($activeYear, fn ($query) => $query->where('class_students.academic_year_id', $activeYear->id))
+            ->pluck('school_classes.id');
+
+        $courses = Course::with(['subject', 'gradeComponents.studentGrades' => fn ($query) => $query->where('student_id', $student->id)])
+            ->whereIn('school_class_id', $classIds)
+            ->where('status', 'published')
+            ->orderBy('title')
             ->paginate(12);
 
-        return view('role.list', [
-            'title' => 'Nilai Saya',
-            'description' => 'Nilai yang telah dipublikasikan guru.',
-            'columns' => ['course' => 'Kursus', 'component' => 'Komponen', 'score' => 'Nilai', 'graded_at' => 'Diperbarui'],
-            'rows' => $grades,
-            'empty' => 'Belum ada nilai yang tercatat.',
-        ]);
+        return view('student.grades.index', compact('courses'));
     }
 
     public function studentAttendance(): View
     {
         $student = Auth::user()->student;
-        $attendance = Attendance::with('session.subject')
-            ->where('student_id', $student?->id)
-            ->latest()
-            ->paginate(12);
+        abort_unless($student, 403, 'Profil siswa tidak ditemukan.');
+        $classIds = $student->schoolClasses()->pluck('school_classes.id');
+        $sessions = AttendanceSession::with(['subject', 'attendances' => fn ($query) => $query->where('student_id', $student->id)])
+            ->whereIn('school_class_id', $classIds)
+            ->orderByDesc('date')
+            ->paginate(20);
 
-        return view('role.list', [
-            'title' => 'Presensi Saya',
-            'description' => 'Riwayat kehadiran Anda pada sesi pembelajaran.',
-            'columns' => ['date' => 'Tanggal', 'subject' => 'Mata pelajaran', 'status' => 'Status', 'note' => 'Catatan'],
-            'rows' => $attendance,
-            'empty' => 'Belum ada catatan presensi.',
-        ]);
+        return view('student.attendance.index', compact('sessions'));
     }
 
     public function studentSchedule(): View
     {
         $student = Auth::user()->student;
-        $classIds = $student?->schoolClasses()->pluck('school_classes.id') ?? collect();
+        $activeYear = AcademicYear::where('is_active', true)->first();
+        $classIds = $student?->schoolClasses()
+            ->when($activeYear, fn ($query) => $query->where('class_students.academic_year_id', $activeYear->id))
+            ->pluck('school_classes.id') ?? collect();
         $schedules = Schedule::with(['schoolClass', 'subject', 'teacher.user'])
             ->whereIn('school_class_id', $classIds)
-            ->orderByRaw("FIELD(day_of_week, 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday')")
-            ->orderBy('start_time')
+            ->when($activeYear, fn ($query) => $query->where('academic_year_id', $activeYear->id))
+            ->orderByDayAndTime()
             ->paginate(20);
 
         return view('role.list', [
             'title' => 'Jadwal Pelajaran',
-            'description' => 'Jadwal berdasarkan kelas akademik Anda.',
+            'description' => 'Jadwal kelas Anda'.($activeYear ? ' · '.$activeYear->name : '').'.',
             'columns' => ['day' => 'Hari', 'time' => 'Jam', 'subject' => 'Mata pelajaran', 'teacher' => 'Guru', 'room' => 'Ruang'],
             'rows' => $schedules,
             'empty' => 'Belum ada jadwal untuk kelas Anda.',

@@ -16,6 +16,7 @@ class QuizAttempt extends Model
         'submitted_at',
         'score',
         'is_auto_submitted',
+        'is_locked',
         'status',
     ];
 
@@ -27,6 +28,7 @@ class QuizAttempt extends Model
             'submitted_at' => 'datetime',
             'score' => 'decimal:2',
             'is_auto_submitted' => 'boolean',
+            'is_locked' => 'boolean',
         ];
     }
 

@@ -31,9 +31,30 @@ class AuthController extends Controller
         $remember = $request->boolean('remember');
 
         if (Auth::attempt($credentials, $remember)) {
+            $user = Auth::user();
+
+            $isInactive = false;
+            if ($user->teacher && ! $user->teacher->is_active) {
+                $isInactive = true;
+            } elseif ($user->student && ! $user->student->is_active) {
+                $isInactive = true;
+            } elseif ($user->guardian && ! $user->guardian->is_active) {
+                $isInactive = true;
+            }
+
+            if ($isInactive) {
+                Auth::logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+
+                throw ValidationException::withMessages([
+                    'email' => 'Akun Anda saat ini berstatus non-aktif. Silakan hubungi Administrator / Tata Usaha sekolah.',
+                ]);
+            }
+
             $request->session()->regenerate();
 
-            AuditLog::log('login', Auth::user());
+            AuditLog::log('login', $user);
 
             return $this->redirectBasedOnRole();
         }

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Question extends Model
@@ -35,5 +36,10 @@ class Question extends Model
     public function options(): HasMany
     {
         return $this->hasMany(QuestionOption::class)->orderBy('order');
+    }
+
+    public function media(): MorphMany
+    {
+        return $this->morphMany(Media::class, 'model');
     }
 }

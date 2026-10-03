@@ -109,7 +109,7 @@
                                             {{ $att->score }}
                                         </div>
                                     </div>
-                                    @if($att->status === 'completed')
+                                    @if(in_array($att->status, ['submitted', 'graded'], true))
                                         <a href="{{ route('student.quizzes.result', [$quiz, $att]) }}" class="px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 font-semibold text-xs hover:bg-slate-200 transition">
                                             Lihat Hasil
                                         </a>

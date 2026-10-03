@@ -3,504 +3,1760 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>SIAKAD + LMS - SMA Nusantara Digital</title>
+
+    <title>SIAKAD + LMS — SMA Nusantara Digital</title>
+
     <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600,700" rel="stylesheet">
+    <link
+        href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600,700"
+        rel="stylesheet"
+    >
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Instrument Sans', sans-serif;
+        }
+    </style>
 </head>
-<body class="bg-slate-50 text-slate-800 antialiased selection:bg-indigo-600 selection:text-white">
+
+<body class="bg-white text-slate-900 antialiased">
 
     <!-- ========================================================= -->
     <!-- NAVBAR -->
     <!-- ========================================================= -->
-    <header class="sticky top-0 z-50 border-b border-slate-200/80 bg-white/90 backdrop-blur-md">
-        <div class="mx-auto flex h-20 max-w-7xl items-center justify-between px-6 lg:px-8">
-            <!-- Logo -->
-            <a href="{{ url('/') }}" class="flex items-center gap-3 group">
-                <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-indigo-600 text-base font-bold text-white shadow-md shadow-indigo-200 transition group-hover:scale-105">
+
+    <header class="sticky top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur-xl">
+
+        <div class="mx-auto flex h-[72px] w-full max-w-7xl items-center justify-between px-5 sm:px-6 lg:px-8">
+
+            <!-- Brand -->
+            <a
+                href="{{ url('/') }}"
+                class="flex shrink-0 items-center gap-3"
+            >
+                <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-950 text-sm font-bold text-white">
                     S
                 </div>
+
                 <div class="leading-tight">
-                    <div class="text-base font-bold text-slate-900">SIAKAD + LMS</div>
-                    <div class="text-xs text-slate-500 font-medium">SMA Nusantara Digital</div>
+                    <div class="text-sm font-bold tracking-tight text-slate-950">
+                        SIAKAD + LMS
+                    </div>
+
+                    <div class="mt-0.5 text-[11px] font-medium text-slate-500">
+                        SMA Nusantara Digital
+                    </div>
                 </div>
             </a>
 
-            <!-- Menu Desktop -->
-            <nav class="hidden items-center gap-6 lg:gap-8 md:flex">
-                <a href="#tentang" class="text-sm font-medium text-slate-600 transition hover:text-indigo-600">Tentang</a>
-                <a href="#fitur" class="text-sm font-medium text-slate-600 transition hover:text-indigo-600">Fitur Utama</a>
-                <a href="#manfaat" class="text-sm font-medium text-slate-600 transition hover:text-indigo-600">Keunggulan</a>
-                <a href="#demo" class="text-sm font-medium text-slate-600 transition hover:text-indigo-600">Akun Demo</a>
-                <a href="#verifikasi-kts" class="text-sm font-medium text-slate-600 transition hover:text-indigo-600">Verifikasi KTS</a>
+
+            <!-- Navigation -->
+            <nav class="hidden items-center lg:flex">
+
+                <a
+                    href="#tentang"
+                    class="ml-8 text-sm font-medium text-slate-500 transition hover:text-slate-950"
+                >
+                    Tentang
+                </a>
+
+                <a
+                    href="#fitur"
+                    class="ml-8 text-sm font-medium text-slate-500 transition hover:text-slate-950"
+                >
+                    Fitur
+                </a>
+
+                <a
+                    href="#keunggulan"
+                    class="ml-8 text-sm font-medium text-slate-500 transition hover:text-slate-950"
+                >
+                    Keunggulan
+                </a>
+
+                <a
+                    href="#demo"
+                    class="ml-8 text-sm font-medium text-slate-500 transition hover:text-slate-950"
+                >
+                    Demo
+                </a>
+
+                <a
+                    href="#verifikasi"
+                    class="ml-8 text-sm font-medium text-slate-500 transition hover:text-slate-950"
+                >
+                    Verifikasi
+                </a>
+
             </nav>
 
-            <!-- Action Button -->
-            <div class="flex items-center gap-4">
+
+            <!-- Login -->
+            <div class="shrink-0">
+
                 @auth
-                    <a href="{{ url('/dashboard') }}" class="inline-flex items-center rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-indigo-100 transition hover:bg-indigo-700">
+
+                    <a
+                        href="{{ url('/dashboard') }}"
+                        class="inline-flex h-10 items-center rounded-xl bg-slate-950 px-5 text-sm font-semibold text-white transition hover:bg-slate-800"
+                    >
                         Dashboard
                     </a>
+
                 @else
+
                     @if (Route::has('login'))
-                        <a href="{{ route('login') }}" class="inline-flex items-center rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-indigo-100 transition hover:bg-indigo-700">
-                            Masuk ke Sistem
+
+                        <a
+                            href="{{ route('login') }}"
+                            class="inline-flex h-10 items-center rounded-xl bg-slate-950 px-5 text-sm font-semibold text-white transition hover:bg-slate-800"
+                        >
+                            Masuk
                         </a>
+
                     @endif
+
                 @endauth
+
             </div>
+
         </div>
     </header>
 
-    <!-- ========================================================= -->
-    <!-- MAIN CONTENT -->
-    <!-- ========================================================= -->
+
     <main>
-        <!-- HERO SECTION -->
-        <section class="relative overflow-hidden bg-white py-16 lg:py-20 border-b border-slate-100">
-            <div class="pointer-events-none absolute inset-0 overflow-hidden">
-                <div class="absolute left-1/2 top-0 h-[450px] w-[800px] -translate-x-1/2 rounded-full bg-gradient-to-tr from-indigo-100/50 to-violet-100/30 blur-3xl"></div>
+
+        <!-- ===================================================== -->
+        <!-- HERO -->
+        <!-- ===================================================== -->
+
+        <section class="relative overflow-hidden border-b border-slate-200 bg-white">
+
+            <!-- Background -->
+            <div class="pointer-events-none absolute inset-0">
+
+                <div class="absolute left-1/2 top-[-280px] h-[650px] w-[900px] -translate-x-1/2 rounded-full bg-indigo-50 blur-3xl"></div>
+
+                <div class="absolute right-[-200px] top-[300px] h-[500px] w-[500px] rounded-full bg-violet-50 blur-3xl"></div>
+
             </div>
 
-            <div class="relative mx-auto max-w-7xl px-6 lg:px-8">
-                <div class="grid items-center gap-12 lg:grid-cols-12 lg:gap-8">
-                    <!-- LEFT COLUMN (7 Cols) -->
-                    <div class="lg:col-span-7">
-                        <div class="mb-5 inline-flex items-center gap-2 rounded-full bg-indigo-50 px-4 py-1.5 text-xs font-semibold text-indigo-700 ring-1 ring-inset ring-indigo-600/20">
-                            <span class="h-2 w-2 rounded-full bg-indigo-600 animate-pulse"></span>
-                            SIAKAD & LMS E-Learning Terintegrasi
+
+            <div class="relative mx-auto w-full max-w-7xl px-5 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-24">
+
+                <div class="flex flex-col gap-14 lg:flex-row lg:items-center lg:gap-16">
+
+                    <!-- Hero Content -->
+                    <div class="w-full lg:w-1/2">
+
+                        <div class="inline-flex items-center gap-2 rounded-full border border-indigo-100 bg-indigo-50 px-3 py-1.5">
+
+                            <span class="h-1.5 w-1.5 rounded-full bg-indigo-600"></span>
+
+                            <span class="text-xs font-semibold text-indigo-700">
+                                Platform Pendidikan Terintegrasi
+                            </span>
+
                         </div>
-                        <h1 class="text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl lg:text-6xl leading-[1.15]">
-                            Satu Siswa. Satu Profil. <span class="bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">Satu Platform Belajar.</span>
+
+
+                        <h1 class="mt-7 max-w-xl text-4xl font-bold leading-[1.08] tracking-[-0.04em] text-slate-950 sm:text-5xl lg:text-[58px]">
+
+                            Semua aktivitas sekolah.
+
+                            <span class="block text-indigo-600">
+                                Satu platform.
+                            </span>
+
                         </h1>
-                        <p class="mt-5 text-base sm:text-lg leading-relaxed text-slate-600 max-w-2xl">
-                            Ekosistem terpadu SMA Nusantara Digital yang menghubungkan struktur akademik SIAKAD dengan LMS E-Learning secara otomatis: dari kurikulum, jadwal pelajaran anti-bentrok, materi bab berjenjang, ujian CBT server-authoritative, hingga portal orang tua.
+
+
+                        <p class="mt-6 max-w-lg text-base leading-7 text-slate-600">
+                            SIAKAD + LMS menghubungkan administrasi akademik,
+                            pembelajaran digital, ujian, nilai, dan monitoring
+                            siswa dalam satu ekosistem yang sederhana.
                         </p>
 
-                        <!-- CTA Actions -->
-                        <div class="mt-8 flex flex-wrap items-center gap-4">
+
+                        <!-- CTA -->
+                        <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+
                             @auth
-                                <a href="{{ url('/dashboard') }}" class="inline-flex h-12 items-center justify-center rounded-xl bg-indigo-600 px-7 text-sm font-semibold text-white shadow-lg shadow-indigo-200 transition hover:bg-indigo-700">
-                                    Buka Dashboard Saya
-                                    <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+
+                                <a
+                                    href="{{ url('/dashboard') }}"
+                                    class="inline-flex h-12 items-center justify-center rounded-xl bg-slate-950 px-6 text-sm font-semibold text-white shadow-lg shadow-slate-950/10 transition hover:-translate-y-0.5 hover:bg-slate-800"
+                                >
+                                    Buka Dashboard
+
+                                    <svg
+                                        class="ml-2 h-4 w-4"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                    >
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            d="M13 7l5 5m0 0l-5 5m5-5H6"
+                                        />
+                                    </svg>
                                 </a>
+
                             @else
-                                <a href="{{ route('login') }}" class="inline-flex h-12 items-center justify-center rounded-xl bg-indigo-600 px-7 text-sm font-semibold text-white shadow-lg shadow-indigo-200 transition hover:bg-indigo-700">
-                                    Masuk ke Sistem
-                                    <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-                                </a>
+
+                                @if (Route::has('login'))
+
+                                    <a
+                                        href="{{ route('login') }}"
+                                        class="inline-flex h-12 items-center justify-center rounded-xl bg-slate-950 px-6 text-sm font-semibold text-white shadow-lg shadow-slate-950/10 transition hover:-translate-y-0.5 hover:bg-slate-800"
+                                    >
+                                        Masuk ke Sistem
+
+                                        <svg
+                                            class="ml-2 h-4 w-4"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                        >
+                                            <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                d="M13 7l5 5m0 0l-5 5m5-5H6"
+                                            />
+                                        </svg>
+                                    </a>
+
+                                @endif
+
                             @endauth
-                            <a href="#demo" class="inline-flex h-12 items-center justify-center rounded-xl border border-slate-300 bg-white px-6 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50">
-                                Coba Akun Demo
+
+
+                            <a
+                                href="#demo"
+                                class="inline-flex h-12 items-center justify-center rounded-xl border border-slate-200 bg-white px-6 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
+                            >
+                                Lihat Demo
                             </a>
-                            <a href="#verifikasi-kts" class="inline-flex h-12 items-center justify-center rounded-xl border border-indigo-100 bg-indigo-50/60 px-5 text-sm font-semibold text-indigo-700 transition hover:bg-indigo-100/60">
-                                Verifikasi KTS
-                            </a>
+
                         </div>
 
-                        <!-- Checkmarks badge -->
-                        <div class="mt-10 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs font-medium text-slate-500">
-                            <span class="flex items-center gap-1.5"><svg class="w-4 h-4 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg> Single Source of Truth</span>
-                            <span class="flex items-center gap-1.5"><svg class="w-4 h-4 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg> Server-Authoritative CBT</span>
-                            <span class="flex items-center gap-1.5"><svg class="w-4 h-4 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg> Digital KTS QR Verified</span>
+
+                        <!-- Trust -->
+                        <div class="mt-8 flex flex-wrap gap-x-6 gap-y-3">
+
+                            <div class="flex items-center gap-2 text-xs font-medium text-slate-500">
+
+                                <div class="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-50">
+                                    <svg
+                                        class="h-3 w-3 text-emerald-600"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                        stroke-width="3"
+                                    >
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            d="M5 13l4 4L19 7"
+                                        />
+                                    </svg>
+                                </div>
+
+                                Data terpusat
+                            </div>
+
+
+                            <div class="flex items-center gap-2 text-xs font-medium text-slate-500">
+
+                                <div class="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-50">
+                                    <svg
+                                        class="h-3 w-3 text-emerald-600"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                        stroke-width="3"
+                                    >
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            d="M5 13l4 4L19 7"
+                                        />
+                                    </svg>
+                                </div>
+
+                                Multi-role
+                            </div>
+
+
+                            <div class="flex items-center gap-2 text-xs font-medium text-slate-500">
+
+                                <div class="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-50">
+                                    <svg
+                                        class="h-3 w-3 text-emerald-600"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                        stroke-width="3"
+                                    >
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            d="M5 13l4 4L19 7"
+                                        />
+                                    </svg>
+                                </div>
+
+                                Digital learning
+                            </div>
+
                         </div>
+
                     </div>
 
-                    <!-- RIGHT VISUAL COLUMN (5 Cols) -->
-                    <div class="lg:col-span-5 flex justify-center">
-                        <div class="relative w-full max-w-md rounded-2xl bg-white p-6 border border-slate-200/90 shadow-xl shadow-slate-200/50">
-                            <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+
+                    <!-- ================================================= -->
+                    <!-- DASHBOARD PREVIEW -->
+                    <!-- ================================================= -->
+
+                    <div class="w-full lg:w-1/2">
+
+                        <div class="relative mx-auto w-full max-w-[620px]">
+
+                            <!-- Glow -->
+                            <div class="absolute -inset-5 rounded-[32px] bg-indigo-100/70 blur-3xl"></div>
+
+
+                            <!-- Browser -->
+                            <div class="relative overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl shadow-slate-900/10">
+
+                                <!-- Browser Bar -->
+                                <div class="flex h-12 items-center justify-between border-b border-slate-200 bg-slate-50 px-4">
+
+                                    <div class="flex items-center gap-1.5">
+
+                                        <span class="h-2.5 w-2.5 rounded-full bg-slate-300"></span>
+                                        <span class="h-2.5 w-2.5 rounded-full bg-slate-300"></span>
+                                        <span class="h-2.5 w-2.5 rounded-full bg-slate-300"></span>
+
+                                    </div>
+
+
+                                    <div class="hidden rounded-lg border border-slate-200 bg-white px-5 py-1.5 text-[10px] font-medium text-slate-400 sm:block">
+                                        app.smanusantaradigital.sch.id
+                                    </div>
+
+
+                                    <div class="w-12"></div>
+
+                                </div>
+
+
+                                <!-- Application -->
+                                <div class="flex min-h-[430px] bg-slate-50">
+
+                                    <!-- Sidebar -->
+                                    <aside class="hidden w-[76px] shrink-0 border-r border-slate-200 bg-white p-3 sm:block">
+
+                                        <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-950 text-xs font-bold text-white">
+                                            S
+                                        </div>
+
+
+                                        <div class="mt-8 space-y-2">
+
+                                            <div class="flex h-9 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600">
+
+                                                <svg
+                                                    class="h-4 w-4"
+                                                    fill="none"
+                                                    viewBox="0 0 24 24"
+                                                    stroke="currentColor"
+                                                    stroke-width="1.8"
+                                                >
+                                                    <path
+                                                        stroke-linecap="round"
+                                                        stroke-linejoin="round"
+                                                        d="M3 11.5L12 4l9 7.5M5.5 10v9.5h13V10"
+                                                    />
+                                                </svg>
+
+                                            </div>
+
+
+                                            <div class="flex h-9 items-center justify-center rounded-xl text-slate-300">
+
+                                                <svg
+                                                    class="h-4 w-4"
+                                                    fill="none"
+                                                    viewBox="0 0 24 24"
+                                                    stroke="currentColor"
+                                                    stroke-width="1.8"
+                                                >
+                                                    <path
+                                                        stroke-linecap="round"
+                                                        d="M5 6h14M5 12h14M5 18h14"
+                                                    />
+                                                </svg>
+
+                                            </div>
+
+
+                                            <div class="flex h-9 items-center justify-center rounded-xl text-slate-300">
+
+                                                <svg
+                                                    class="h-4 w-4"
+                                                    fill="none"
+                                                    viewBox="0 0 24 24"
+                                                    stroke="currentColor"
+                                                    stroke-width="1.8"
+                                                >
+                                                    <path
+                                                        stroke-linecap="round"
+                                                        d="M12 5v14M5 12h14"
+                                                    />
+                                                </svg>
+
+                                            </div>
+
+
+                                            <div class="flex h-9 items-center justify-center rounded-xl text-slate-300">
+
+                                                <svg
+                                                    class="h-4 w-4"
+                                                    fill="none"
+                                                    viewBox="0 0 24 24"
+                                                    stroke="currentColor"
+                                                    stroke-width="1.8"
+                                                >
+                                                    <path
+                                                        stroke-linecap="round"
+                                                        stroke-linejoin="round"
+                                                        d="M4 18V6m0 12h16M8 15l3-4 3 2 4-6"
+                                                    />
+                                                </svg>
+
+                                            </div>
+
+                                        </div>
+
+                                    </aside>
+
+
+                                    <!-- Dashboard -->
+                                    <div class="min-w-0 flex-1 p-5 sm:p-6">
+
+                                        <!-- Header -->
+                                        <div class="flex items-start justify-between gap-4">
+
+                                            <div class="min-w-0">
+
+                                                <div class="text-[9px] font-semibold uppercase tracking-wider text-slate-400">
+                                                    Senin, 03 Oktober 2026
+                                                </div>
+
+                                                <h3 class="mt-1 text-sm font-bold text-slate-950 sm:text-base">
+                                                    Selamat datang kembali
+                                                </h3>
+
+                                            </div>
+
+
+                                            <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-indigo-100 text-[10px] font-bold text-indigo-700">
+                                                AF
+                                            </div>
+
+                                        </div>
+
+
+                                        <!-- Stats -->
+                                        <div class="mt-6 grid grid-cols-3 gap-3">
+
+                                            <div class="min-w-0 rounded-xl border border-slate-200 bg-white p-3">
+
+                                                <div class="truncate text-[9px] font-medium text-slate-400">
+                                                    Mata Pelajaran
+                                                </div>
+
+                                                <div class="mt-2 text-xl font-bold text-slate-950">
+                                                    12
+                                                </div>
+
+                                                <div class="mt-1 text-[9px] font-medium text-emerald-600">
+                                                    +2 semester ini
+                                                </div>
+
+                                            </div>
+
+
+                                            <div class="min-w-0 rounded-xl border border-slate-200 bg-white p-3">
+
+                                                <div class="truncate text-[9px] font-medium text-slate-400">
+                                                    Tugas Aktif
+                                                </div>
+
+                                                <div class="mt-2 text-xl font-bold text-slate-950">
+                                                    04
+                                                </div>
+
+                                                <div class="mt-1 text-[9px] font-medium text-amber-600">
+                                                    2 perlu dikerjakan
+                                                </div>
+
+                                            </div>
+
+
+                                            <div class="min-w-0 rounded-xl border border-slate-200 bg-white p-3">
+
+                                                <div class="truncate text-[9px] font-medium text-slate-400">
+                                                    Rata-rata Nilai
+                                                </div>
+
+                                                <div class="mt-2 text-xl font-bold text-slate-950">
+                                                    87.4
+                                                </div>
+
+                                                <div class="mt-1 text-[9px] font-medium text-emerald-600">
+                                                    +4.2% bulan ini
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+
+                                        <!-- Dashboard Cards -->
+                                        <div class="mt-4 flex flex-col gap-3 sm:flex-row">
+
+                                            <!-- Chart -->
+                                            <div class="w-full rounded-xl border border-slate-200 bg-white p-4 sm:w-1/2">
+
+                                                <div class="flex items-center justify-between">
+
+                                                    <div class="text-[10px] font-bold text-slate-950">
+                                                        Aktivitas Belajar
+                                                    </div>
+
+                                                    <span class="text-[8px] font-semibold text-indigo-600">
+                                                        Minggu ini
+                                                    </span>
+
+                                                </div>
+
+
+                                                <div class="mt-6 flex h-28 items-end gap-2">
+
+                                                    <div class="h-[35%] flex-1 rounded-t bg-indigo-100"></div>
+                                                    <div class="h-[55%] flex-1 rounded-t bg-indigo-200"></div>
+                                                    <div class="h-[45%] flex-1 rounded-t bg-indigo-200"></div>
+                                                    <div class="h-[72%] flex-1 rounded-t bg-indigo-400"></div>
+                                                    <div class="h-[60%] flex-1 rounded-t bg-indigo-300"></div>
+                                                    <div class="h-[90%] flex-1 rounded-t bg-indigo-600"></div>
+                                                    <div class="h-[68%] flex-1 rounded-t bg-indigo-400"></div>
+
+                                                </div>
+
+                                            </div>
+
+
+                                            <!-- Schedule -->
+                                            <div class="w-full rounded-xl border border-slate-200 bg-white p-4 sm:w-1/2">
+
+                                                <div class="text-[10px] font-bold text-slate-950">
+                                                    Jadwal Berikutnya
+                                                </div>
+
+
+                                                <div class="mt-4 space-y-2">
+
+                                                    <div class="flex items-center gap-2 rounded-lg bg-slate-50 p-2.5">
+
+                                                        <div class="h-8 w-8 shrink-0 rounded-lg bg-indigo-100"></div>
+
+                                                        <div class="min-w-0">
+
+                                                            <div class="truncate text-[9px] font-bold text-slate-800">
+                                                                Matematika
+                                                            </div>
+
+                                                            <div class="mt-0.5 text-[8px] text-slate-400">
+                                                                08:00 — Ruang 204
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+
+
+                                                    <div class="flex items-center gap-2 rounded-lg bg-slate-50 p-2.5">
+
+                                                        <div class="h-8 w-8 shrink-0 rounded-lg bg-violet-100"></div>
+
+                                                        <div class="min-w-0">
+
+                                                            <div class="truncate text-[9px] font-bold text-slate-800">
+                                                                Bahasa Indonesia
+                                                            </div>
+
+                                                            <div class="mt-0.5 text-[8px] text-slate-400">
+                                                                10:00 — Ruang 201
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+
+                                        <!-- Progress -->
+                                        <div class="mt-3 rounded-xl border border-slate-200 bg-white p-4">
+
+                                            <div class="flex items-center justify-between">
+
+                                                <div>
+
+                                                    <div class="text-[10px] font-bold text-slate-950">
+                                                        Progress Pembelajaran
+                                                    </div>
+
+                                                    <div class="mt-1 text-[8px] text-slate-400">
+                                                        Semester Ganjil
+                                                    </div>
+
+                                                </div>
+
+
+                                                <div class="text-sm font-bold text-indigo-600">
+                                                    78%
+                                                </div>
+
+                                            </div>
+
+
+                                            <div class="mt-3 h-2 overflow-hidden rounded-full bg-slate-100">
+
+                                                <div class="h-full w-[78%] rounded-full bg-indigo-600"></div>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- Floating status -->
+                            <div class="absolute -bottom-5 -left-5 hidden rounded-xl border border-slate-200 bg-white p-3 shadow-xl shadow-slate-900/10 sm:block">
+
                                 <div class="flex items-center gap-3">
-                                    <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-600 text-lg font-bold text-white shadow-sm">
-                                        S
+
+                                    <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-50">
+
+                                        <svg
+                                            class="h-4 w-4 text-emerald-600"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                        >
+                                            <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                d="M5 13l4 4L19 7"
+                                            />
+                                        </svg>
+
                                     </div>
+
                                     <div>
-                                        <div class="text-sm font-bold text-slate-900">SMA Nusantara Digital</div>
-                                        <div class="text-xs text-indigo-600 font-medium">Sistem Terintegrasi v3.0</div>
-                                    </div>
-                                </div>
-                                <span class="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200/60">SIAKAD Aktif</span>
-                            </div>
-                            
-                            <div class="mt-4 space-y-3">
-                                <div class="flex items-center justify-between rounded-xl bg-slate-50 p-3.5 border border-slate-100">
-                                    <div class="flex items-center gap-3">
-                                        <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-100 text-indigo-700">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+
+                                        <div class="text-[10px] font-bold text-slate-900">
+                                            Semua sistem normal
                                         </div>
-                                        <div>
-                                            <div class="text-xs font-semibold text-slate-800">Tahun Ajaran 2024/2025</div>
-                                            <div class="text-[11px] text-slate-500">Semester Ganjil &bull; Kurikulum Merdeka</div>
+
+                                        <div class="mt-0.5 text-[9px] text-slate-400">
+                                            Platform siap digunakan
                                         </div>
+
                                     </div>
-                                    <span class="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded">Aktif</span>
+
                                 </div>
 
-                                <div class="flex items-center justify-between rounded-xl bg-slate-50 p-3.5 border border-slate-100">
-                                    <div class="flex items-center gap-3">
-                                        <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-violet-100 text-violet-700">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                                        </div>
-                                        <div>
-                                            <div class="text-xs font-semibold text-slate-800">CBT & Ujian Digital</div>
-                                            <div class="text-[11px] text-slate-500">Timer Server &bull; Anti-Cheat Log</div>
-                                        </div>
-                                    </div>
-                                    <span class="text-[10px] font-bold text-violet-700 bg-violet-50 px-2 py-0.5 rounded">Ready</span>
-                                </div>
-
-                                <div class="flex items-center justify-between rounded-xl bg-slate-50 p-3.5 border border-slate-100">
-                                    <div class="flex items-center gap-3">
-                                        <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-100 text-emerald-700">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2"/></svg>
-                                        </div>
-                                        <div>
-                                            <div class="text-xs font-semibold text-slate-800">Kartu Siswa (KTS) Digital</div>
-                                            <div class="text-[11px] text-slate-500">QR Code Verifikasi Publik</div>
-                                        </div>
-                                    </div>
-                                    <span class="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">Valid</span>
-                                </div>
                             </div>
 
-                            <div class="mt-4 pt-4 border-t border-slate-100 text-center">
-                                <a href="{{ route('login') }}" class="inline-flex w-full items-center justify-center rounded-xl bg-slate-900 py-2.5 text-xs font-semibold text-white transition hover:bg-slate-800">
-                                    Pilih Peran & Masuk &rarr;
-                                </a>
-                            </div>
                         </div>
+
                     </div>
+
                 </div>
+
             </div>
+
         </section>
 
-        <!-- VALUE STRIP -->
-        <section class="border-y border-slate-200 bg-white">
-            <div class="mx-auto max-w-7xl px-6 lg:px-8">
-                <div class="grid divide-y divide-slate-100 py-6 sm:grid-cols-3 sm:divide-x sm:divide-y-0">
-                    <div class="px-6 py-4 text-center sm:first:pl-0">
-                        <div class="text-base font-bold text-slate-900">Akademik Terintegrasi</div>
-                        <div class="mt-1 text-xs text-slate-500">Seluruh data administrasi dalam satu sistem</div>
+
+        <!-- ===================================================== -->
+        <!-- TRUST / PRODUCT CATEGORIES -->
+        <!-- ===================================================== -->
+
+        <section class="border-b border-slate-200 bg-white">
+
+            <div class="mx-auto flex w-full max-w-7xl flex-col sm:flex-row sm:divide-x sm:divide-slate-200">
+
+                <div class="flex-1 px-6 py-7 text-center sm:py-8">
+                    <div class="text-sm font-bold text-slate-950">
+                        Academic Management
                     </div>
-                    <div class="px-6 py-4 text-center">
-                        <div class="text-base font-bold text-slate-900">Pembelajaran Digital</div>
-                        <div class="mt-1 text-xs text-slate-500">Materi, tugas, dan ujian lebih mudah diakses</div>
-                    </div>
-                    <div class="px-6 py-4 text-center sm:last:pr-0">
-                        <div class="text-base font-bold text-slate-900">Multi-Role User</div>
-                        <div class="mt-1 text-xs text-slate-500">Akses khusus admin, guru, siswa & orang tua</div>
+
+                    <div class="mt-1 text-xs text-slate-500">
+                        Kelola seluruh data akademik
                     </div>
                 </div>
+
+
+                <div class="flex-1 border-t border-slate-200 px-6 py-7 text-center sm:border-t-0 sm:py-8">
+                    <div class="text-sm font-bold text-slate-950">
+                        Digital Learning
+                    </div>
+
+                    <div class="mt-1 text-xs text-slate-500">
+                        Materi, tugas dan pembelajaran
+                    </div>
+                </div>
+
+
+                <div class="flex-1 border-t border-slate-200 px-6 py-7 text-center sm:border-t-0 sm:py-8">
+                    <div class="text-sm font-bold text-slate-950">
+                        Assessment
+                    </div>
+
+                    <div class="mt-1 text-xs text-slate-500">
+                        Ujian, kuis dan nilai
+                    </div>
+                </div>
+
+
+                <div class="flex-1 border-t border-slate-200 px-6 py-7 text-center sm:border-t-0 sm:py-8">
+                    <div class="text-sm font-bold text-slate-950">
+                        Multi Role
+                    </div>
+
+                    <div class="mt-1 text-xs text-slate-500">
+                        Admin, guru, siswa & orang tua
+                    </div>
+                </div>
+
             </div>
+
         </section>
 
-        <!-- ABOUT SECTION -->
-        <section id="tentang" class="py-24 bg-slate-50/50">
-            <div class="mx-auto max-w-7xl px-6 lg:px-8">
-                <div class="grid gap-12 lg:grid-cols-2 lg:gap-16 items-center">
-                    <div>
-                        <div class="inline-block text-xs font-bold uppercase tracking-widest text-indigo-600 mb-3">Tentang Platform</div>
-                        <h2 class="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
-                            Teknologi modern yang membantu sekolah berkembang lebih cepat.
+
+        <!-- ===================================================== -->
+        <!-- ABOUT -->
+        <!-- ===================================================== -->
+
+        <section
+            id="tentang"
+            class="border-b border-slate-200 bg-white py-20 sm:py-24"
+        >
+
+            <div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8">
+
+                <div class="flex flex-col gap-10 lg:flex-row lg:items-start lg:gap-24">
+
+                    <div class="w-full lg:w-1/2">
+
+                        <div class="text-xs font-bold uppercase tracking-[0.18em] text-indigo-600">
+                            Tentang Platform
+                        </div>
+
+                        <h2 class="mt-4 max-w-xl text-3xl font-bold leading-tight tracking-[-0.03em] text-slate-950 sm:text-4xl">
+                            Infrastruktur digital untuk operasional sekolah modern.
                         </h2>
+
                     </div>
-                    <div class="space-y-4 text-slate-600 text-base leading-relaxed">
-                        <p>
-                            SIAKAD + LMS dirancang khusus untuk memenuhi standar operasional pendidikan modern di SMA Nusantara Digital. Sistem menggabungkan pencatatan data akademik dengan pusat pembelajaran mandiri siswa.
+
+
+                    <div class="w-full lg:w-1/2">
+
+                        <p class="text-base leading-7 text-slate-600">
+                            SIAKAD + LMS dirancang untuk menyatukan proses
+                            akademik dan pembelajaran digital dalam satu
+                            platform yang mudah digunakan.
                         </p>
-                        <p>
-                            Penyederhanaan alur kerja ini memastikan guru dapat fokus mendidik, siswa lebih aktif belajar, dan orang tua mendapatkan transparansi penuh atas perkembangan anak mereka.
+
+                        <p class="mt-5 text-base leading-7 text-slate-600">
+                            Guru dapat fokus mengajar, siswa dapat belajar
+                            dengan lebih terstruktur, sementara administrasi
+                            sekolah memiliki data yang lebih terpusat dan
+                            mudah dipantau.
                         </p>
+
                     </div>
+
                 </div>
+
             </div>
+
         </section>
 
-        <!-- FEATURES SECTION -->
-        <section id="fitur" class="py-24 bg-white">
-            <div class="mx-auto max-w-7xl px-6 lg:px-8">
-                <div class="max-w-2xl mb-16">
-                    <div class="inline-block text-xs font-bold uppercase tracking-widest text-indigo-600 mb-3">Fitur Utama</div>
-                    <h2 class="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
-                        Satu platform, solusi untuk berbagai kebutuhan.
+
+        <!-- ===================================================== -->
+        <!-- FEATURES -->
+        <!-- ===================================================== -->
+
+        <section
+            id="fitur"
+            class="bg-slate-50 py-20 sm:py-24"
+        >
+
+            <div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8">
+
+                <div class="max-w-2xl">
+
+                    <div class="text-xs font-bold uppercase tracking-[0.18em] text-indigo-600">
+                        Product Features
+                    </div>
+
+                    <h2 class="mt-4 text-3xl font-bold tracking-[-0.03em] text-slate-950 sm:text-4xl">
+                        Semua modul yang dibutuhkan sekolah.
                     </h2>
-                    <p class="mt-4 text-base text-slate-600">
-                        Semua fungsi krusial sekolah tersedia dalam ekosistem terpadu yang saling terhubung secara otomatis.
+
+                    <p class="mt-4 text-base leading-7 text-slate-500">
+                        Setiap modul dirancang untuk bekerja sebagai satu
+                        ekosistem, bukan aplikasi yang berdiri sendiri.
                     </p>
+
                 </div>
 
-                <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-                    <!-- Feature 1 -->
-                    <div class="rounded-2xl border border-slate-100 bg-slate-50/50 p-8 transition hover:bg-white hover:shadow-xl hover:shadow-slate-100">
-                        <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-100 text-indigo-600 mb-6">
-                            <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg>
+
+                <!-- Feature Grid -->
+                <div class="mt-12 flex flex-wrap gap-4">
+
+                    <!-- Card 1 -->
+                    <div class="w-full rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg sm:w-[calc(50%-8px)] lg:w-[calc(25%-12px)]">
+
+                        <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600">
+
+                            <svg
+                                class="h-5 w-5"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                                stroke-width="1.8"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M4 19.5A2.5 2.5 0 016.5 17H20M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"
+                                />
+                            </svg>
+
                         </div>
-                        <h3 class="text-lg font-bold text-slate-900">Akademik & SIAKAD</h3>
-                        <p class="mt-2 text-sm leading-relaxed text-slate-500">Kelola master data siswa, guru, kelas, kurikulum, dan penjadwalan secara terpusat.</p>
+
+                        <h3 class="mt-5 text-sm font-bold text-slate-950">
+                            SIAKAD
+                        </h3>
+
+                        <p class="mt-2 text-sm leading-6 text-slate-500">
+                            Kelola siswa, guru, kelas, mata pelajaran,
+                            jadwal, absensi dan data akademik.
+                        </p>
+
                     </div>
 
-                    <!-- Feature 2 -->
-                    <div class="rounded-2xl border border-slate-100 bg-slate-50/50 p-8 transition hover:bg-white hover:shadow-xl hover:shadow-slate-100">
-                        <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-violet-100 text-violet-600 mb-6">
-                            <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v18H6.5A2.5 2.5 0 0 1 4 18.5v-13Z"/><path d="M8 7h8M8 11h8M8 15h5"/></svg>
+
+                    <!-- Card 2 -->
+                    <div class="w-full rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg sm:w-[calc(50%-8px)] lg:w-[calc(25%-12px)]">
+
+                        <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-violet-50 text-violet-600">
+
+                            <svg
+                                class="h-5 w-5"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                                stroke-width="1.8"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M4 5.5A2.5 2.5 0 016.5 3H20v18H6.5A2.5 2.5 0 014 18.5v-13z"
+                                />
+
+                                <path
+                                    stroke-linecap="round"
+                                    d="M8 7h8M8 11h8M8 15h5"
+                                />
+                            </svg>
+
                         </div>
-                        <h3 class="text-lg font-bold text-slate-900">E-Learning & LMS</h3>
-                        <p class="mt-2 text-sm leading-relaxed text-slate-500">Penyediaan materi mendalam berstruktur bab, kuis interaktif, dan tugas online.</p>
+
+                        <h3 class="mt-5 text-sm font-bold text-slate-950">
+                            LMS
+                        </h3>
+
+                        <p class="mt-2 text-sm leading-6 text-slate-500">
+                            Materi pembelajaran, bab, kuis, tugas
+                            dan aktivitas belajar digital.
+                        </p>
+
                     </div>
 
-                    <!-- Feature 3 -->
-                    <div class="rounded-2xl border border-slate-100 bg-slate-50/50 p-8 transition hover:bg-white hover:shadow-xl hover:shadow-slate-100">
-                        <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-100 text-emerald-600 mb-6">
-                            <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+
+                    <!-- Card 3 -->
+                    <div class="w-full rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg sm:w-[calc(50%-8px)] lg:w-[calc(25%-12px)]">
+
+                        <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+
+                            <svg
+                                class="h-5 w-5"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                                stroke-width="1.8"
+                            >
+                                <rect
+                                    x="4"
+                                    y="3"
+                                    width="16"
+                                    height="18"
+                                    rx="2"
+                                />
+
+                                <path
+                                    stroke-linecap="round"
+                                    d="M8 7h8M8 11h8M8 15h5"
+                                />
+
+                            </svg>
+
                         </div>
-                        <h3 class="text-lg font-bold text-slate-900">Multi-Role Portal</h3>
-                        <p class="mt-2 text-sm leading-relaxed text-slate-500">Antarmuka khusus dan aman yang disesuaikan untuk admin, guru, siswa, dan orang tua.</p>
+
+                        <h3 class="mt-5 text-sm font-bold text-slate-950">
+                            Assessment
+                        </h3>
+
+                        <p class="mt-2 text-sm leading-6 text-slate-500">
+                            Ujian CBT, kuis, penilaian dan
+                            rekap hasil belajar siswa.
+                        </p>
+
                     </div>
 
-                    <!-- Feature 4 -->
-                    <div class="rounded-2xl border border-slate-100 bg-slate-50/50 p-8 transition hover:bg-white hover:shadow-xl hover:shadow-slate-100">
-                        <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-100 text-amber-600 mb-6">
-                            <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v18"/><path d="M17 7.5A4.5 4.5 0 0 0 12.5 3C10 3 8 4.5 8 6.5S9.5 10 12.5 11c3 .75 4.5 2 4.5 4.5S14.5 21 12 21a4.5 4.5 0 0 1-4.5-4.5"/></svg>
+
+                    <!-- Card 4 -->
+                    <div class="w-full rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg sm:w-[calc(50%-8px)] lg:w-[calc(25%-12px)]">
+
+                        <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-amber-50 text-amber-600">
+
+                            <svg
+                                class="h-5 w-5"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                                stroke-width="1.8"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"
+                                />
+
+                                <circle
+                                    cx="9"
+                                    cy="7"
+                                    r="4"
+                                />
+
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M22 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"
+                                />
+
+                            </svg>
+
                         </div>
-                        <h3 class="text-lg font-bold text-slate-900">Nilai & e-Raport</h3>
-                        <p class="mt-2 text-sm leading-relaxed text-slate-500">Rekapitulasi nilai transparan serta penerbitan laporan hasil belajar secara digital.</p>
+
+                        <h3 class="mt-5 text-sm font-bold text-slate-950">
+                            Multi Role
+                        </h3>
+
+                        <p class="mt-2 text-sm leading-6 text-slate-500">
+                            Workspace berbeda untuk admin,
+                            guru, siswa dan orang tua.
+                        </p>
+
                     </div>
+
                 </div>
+
             </div>
+
         </section>
 
-        <!-- BENEFITS SECTION -->
-        <section id="manfaat" class="py-24 bg-slate-50/50 border-t border-slate-200">
-            <div class="mx-auto max-w-7xl px-6 lg:px-8">
-                <div class="grid items-center gap-16 lg:grid-cols-2 lg:gap-20">
-                    <div>
-                        <div class="inline-block text-xs font-bold uppercase tracking-widest text-indigo-600 mb-3">Keunggulan Sistem</div>
-                        <h2 class="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
-                            Lebih sedikit aplikasi, lebih banyak fokus belajar.
+
+        <!-- ===================================================== -->
+        <!-- ADVANTAGES -->
+        <!-- ===================================================== -->
+
+        <section
+            id="keunggulan"
+            class="border-y border-slate-200 bg-white py-20 sm:py-24"
+        >
+
+            <div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8">
+
+                <div class="flex flex-col gap-12 lg:flex-row lg:items-center lg:gap-20">
+
+                    <!-- Content -->
+                    <div class="w-full lg:w-1/2">
+
+                        <div class="text-xs font-bold uppercase tracking-[0.18em] text-indigo-600">
+                            Kenapa Platform Ini
+                        </div>
+
+                        <h2 class="mt-4 max-w-xl text-3xl font-bold leading-tight tracking-[-0.03em] text-slate-950 sm:text-4xl">
+                            Lebih sedikit tools.
+                            Lebih banyak fokus.
                         </h2>
-                        <p class="mt-4 text-base text-slate-600">
-                            Informasi sekolah yang terhubung secara real-time membantu efisiensi operasional harian.
+
+                        <p class="mt-5 max-w-xl text-base leading-7 text-slate-500">
+                            Semua informasi penting sekolah berada dalam
+                            satu workspace yang terstruktur.
                         </p>
 
-                        <div class="mt-8 space-y-6">
+
+                        <div class="mt-9 space-y-7">
+
                             <div class="flex gap-4">
-                                <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-indigo-600 text-xs font-bold text-white shadow-md shadow-indigo-200">01</div>
-                                <div>
-                                    <h3 class="text-sm font-bold text-slate-900">Data Terpusat & Akurat</h3>
-                                    <p class="mt-1 text-sm text-slate-500">Tidak ada duplikasi data; informasi nilai dan absensi sinkron secara otomatis.</p>
+
+                                <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-slate-950 text-xs font-bold text-white">
+                                    01
                                 </div>
+
+                                <div>
+
+                                    <h3 class="text-sm font-bold text-slate-950">
+                                        Data Terpusat
+                                    </h3>
+
+                                    <p class="mt-1 text-sm leading-6 text-slate-500">
+                                        Data akademik dan pembelajaran
+                                        dikelola dari satu sumber.
+                                    </p>
+
+                                </div>
+
                             </div>
+
+
                             <div class="flex gap-4">
-                                <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-indigo-600 text-xs font-bold text-white shadow-md shadow-indigo-200">02</div>
-                                <div>
-                                    <h3 class="text-sm font-bold text-slate-900">Akses Fleksibel Per Peran</h3>
-                                    <p class="mt-1 text-sm text-slate-500">Setiap pengguna langsung diarahkan ke dasbor dan fitur yang relevan dengan tugasnya.</p>
+
+                                <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-slate-950 text-xs font-bold text-white">
+                                    02
                                 </div>
+
+                                <div>
+
+                                    <h3 class="text-sm font-bold text-slate-950">
+                                        Role-Based Access
+                                    </h3>
+
+                                    <p class="mt-1 text-sm leading-6 text-slate-500">
+                                        Setiap pengguna melihat fitur
+                                        sesuai dengan perannya.
+                                    </p>
+
+                                </div>
+
                             </div>
+
+
                             <div class="flex gap-4">
-                                <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-indigo-600 text-xs font-bold text-white shadow-md shadow-indigo-200">03</div>
-                                <div>
-                                    <h3 class="text-sm font-bold text-slate-900">Pengalaman Pengguna Sederhana</h3>
-                                    <p class="mt-1 text-sm text-slate-500">Antarmuka bersih dirancang dengan teknologi responsif agar nyaman dibuka lewat laptop maupun ponsel.</p>
+
+                                <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-slate-950 text-xs font-bold text-white">
+                                    03
                                 </div>
+
+                                <div>
+
+                                    <h3 class="text-sm font-bold text-slate-950">
+                                        Responsive
+                                    </h3>
+
+                                    <p class="mt-1 text-sm leading-6 text-slate-500">
+                                        Nyaman digunakan melalui desktop,
+                                        tablet maupun smartphone.
+                                    </p>
+
+                                </div>
+
                             </div>
+
                         </div>
+
                     </div>
 
-                    <!-- Card Banner Right -->
-                    <div>
-                        <div class="relative rounded-3xl bg-indigo-600 p-8 sm:p-12 shadow-2xl shadow-indigo-200 text-white overflow-hidden">
-                            <div class="absolute -right-16 -bottom-16 w-64 h-64 rounded-full bg-indigo-500/50 blur-2xl"></div>
-                            <div class="relative z-10">
-                                <div class="text-xs font-bold uppercase tracking-widest text-indigo-200">SIAKAD + LMS Antigravity</div>
-                                <h3 class="mt-3 text-2xl sm:text-3xl font-extrabold leading-tight">Satu ekosistem lengkap untuk seluruh aktivitas sekolah.</h3>
-                                <div class="mt-8 space-y-3">
-                                    <div class="flex items-center gap-3 rounded-xl bg-white/10 px-4 py-3 backdrop-blur-sm">
-                                        <span class="h-2 w-2 rounded-full bg-emerald-400"></span>
-                                        <span class="text-sm font-medium">Administrasi Akademik & SIAKAD</span>
+
+                    <!-- Visual -->
+                    <div class="w-full lg:w-1/2">
+
+                        <div class="relative mx-auto max-w-xl">
+
+                            <div class="absolute -inset-5 rounded-[32px] bg-indigo-100/60 blur-3xl"></div>
+
+
+                            <div class="relative overflow-hidden rounded-3xl bg-slate-950 p-7 text-white shadow-2xl shadow-slate-900/20 sm:p-9">
+
+                                <div class="flex items-center justify-between">
+
+                                    <div class="flex items-center gap-3">
+
+                                        <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 text-sm font-bold">
+                                            S
+                                        </div>
+
+                                        <div>
+
+                                            <div class="text-xs font-bold">
+                                                SIAKAD + LMS
+                                            </div>
+
+                                            <div class="mt-0.5 text-[10px] text-slate-500">
+                                                School Management Platform
+                                            </div>
+
+                                        </div>
+
                                     </div>
-                                    <div class="flex items-center gap-3 rounded-xl bg-white/10 px-4 py-3 backdrop-blur-sm">
+
+
+                                    <div class="flex items-center gap-2">
+
                                         <span class="h-2 w-2 rounded-full bg-emerald-400"></span>
-                                        <span class="text-sm font-medium">Modul Pembelajaran & Materi LMS</span>
+
+                                        <span class="text-[9px] font-medium text-emerald-300">
+                                            Operational
+                                        </span>
+
                                     </div>
-                                    <div class="flex items-center gap-3 rounded-xl bg-white/10 px-4 py-3 backdrop-blur-sm">
-                                        <span class="h-2 w-2 rounded-full bg-emerald-400"></span>
-                                        <span class="text-sm font-medium">Evaluasi Ujian & Rekap Nilai</span>
-                                    </div>
+
                                 </div>
-        <!-- DEMO ACCOUNTS SECTION -->
-        <section id="demo" class="py-20 bg-white border-t border-slate-200">
-            <div class="mx-auto max-w-7xl px-6 lg:px-8">
-                <div class="text-center max-w-3xl mx-auto mb-14">
-                    <div class="inline-block text-xs font-bold uppercase tracking-widest text-indigo-600 mb-2">Evaluasi Cepat</div>
-                    <h2 class="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
-                        Akun Uji Coba Multi-Role Siap Pakai
-                    </h2>
-                    <p class="mt-3 text-slate-600 text-sm sm:text-base">
-                        Gunakan akun demo yang telah di-seeding untuk mencoba fitur spesifik dari tiap hak akses. Kata sandi default semua akun: <code class="font-mono bg-slate-100 text-indigo-700 px-2 py-0.5 rounded font-semibold text-sm">password</code>
-                    </p>
+
+
+                                <div class="mt-10">
+
+                                    <div class="text-[10px] font-bold uppercase tracking-[0.18em] text-indigo-300">
+                                        Connected workspace
+                                    </div>
+
+                                    <h3 class="mt-3 text-2xl font-bold leading-tight tracking-[-0.03em] sm:text-3xl">
+                                        Satu ekosistem untuk seluruh aktivitas sekolah.
+                                    </h3>
+
+                                </div>
+
+
+                                <div class="mt-8 space-y-2">
+
+                                    <div class="flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-3">
+
+                                        <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-500/20 text-indigo-300">
+                                            01
+                                        </div>
+
+                                        <div class="text-xs font-medium">
+                                            Administrasi Akademik
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-3">
+
+                                        <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-violet-500/20 text-violet-300">
+                                            02
+                                        </div>
+
+                                        <div class="text-xs font-medium">
+                                            Digital Learning
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-3">
+
+                                        <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/20 text-emerald-300">
+                                            03
+                                        </div>
+
+                                        <div class="text-xs font-medium">
+                                            Assessment & Reporting
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="mt-8 border-t border-white/10 pt-6">
+
+                                    <div class="flex items-center justify-between">
+
+                                        <div>
+
+                                            <div class="text-[10px] text-slate-500">
+                                                Platform status
+                                            </div>
+
+                                            <div class="mt-1 text-sm font-bold">
+                                                Ready for learning
+                                            </div>
+
+                                        </div>
+
+
+                                        <div class="text-right">
+
+                                            <div class="text-2xl font-bold">
+                                                99.9%
+                                            </div>
+
+                                            <div class="text-[9px] text-slate-500">
+                                                service availability
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
                 </div>
 
-                <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                    <!-- Card 1: Admin TU -->
-                    <div class="rounded-2xl border border-slate-200 bg-slate-50/70 p-6 flex flex-col justify-between hover:border-indigo-300 hover:bg-white transition shadow-sm hover:shadow-md">
-                        <div>
-                            <div class="flex items-center justify-between mb-4">
-                                <span class="text-xs font-bold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-md">Tata Usaha</span>
-                                <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
-                            </div>
-                            <h3 class="text-base font-bold text-slate-900">Operator / Admin</h3>
-                            <p class="mt-2 text-xs text-slate-500 leading-relaxed">
-                                Kelola data master siswa, guru, kelas rombel, mapel, jadwal anti-bentrok, dan rekap absensi/nilai sekolah.
-                            </p>
-                            <div class="mt-4 p-3 bg-white rounded-xl border border-slate-100 text-xs font-mono space-y-1">
-                                <div class="text-slate-500 text-[11px]">Email:</div>
-                                <div class="font-semibold text-slate-800 break-all">admin@school.test</div>
-                            </div>
-                        </div>
-                        <a href="{{ route('login') }}" class="mt-5 inline-flex items-center justify-center w-full py-2 px-3 text-xs font-semibold rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition">
-                            Login Admin &rarr;
-                        </a>
-                    </div>
-
-                    <!-- Card 2: Teacher -->
-                    <div class="rounded-2xl border border-slate-200 bg-slate-50/70 p-6 flex flex-col justify-between hover:border-violet-300 hover:bg-white transition shadow-sm hover:shadow-md">
-                        <div>
-                            <div class="flex items-center justify-between mb-4">
-                                <span class="text-xs font-bold uppercase tracking-wider text-violet-600 bg-violet-50 px-2.5 py-1 rounded-md">Tenaga Pendidik</span>
-                                <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
-                            </div>
-                            <h3 class="text-base font-bold text-slate-900">Guru (Budi Santoso)</h3>
-                            <p class="mt-2 text-xs text-slate-500 leading-relaxed">
-                                Kelola materi modul bab/topik, kuis CBT server-authoritative, koreksi & nilai tugas siswa, serta presensi kelas.
-                            </p>
-                            <div class="mt-4 p-3 bg-white rounded-xl border border-slate-100 text-xs font-mono space-y-1">
-                                <div class="text-slate-500 text-[11px]">Email:</div>
-                                <div class="font-semibold text-slate-800 break-all">teacher@school.test</div>
-                            </div>
-                        </div>
-                        <a href="{{ route('login') }}" class="mt-5 inline-flex items-center justify-center w-full py-2 px-3 text-xs font-semibold rounded-lg bg-violet-600 text-white hover:bg-violet-700 transition">
-                            Login Guru &rarr;
-                        </a>
-                    </div>
-
-                    <!-- Card 3: Student -->
-                    <div class="rounded-2xl border border-slate-200 bg-slate-50/70 p-6 flex flex-col justify-between hover:border-emerald-300 hover:bg-white transition shadow-sm hover:shadow-md">
-                        <div>
-                            <div class="flex items-center justify-between mb-4">
-                                <span class="text-xs font-bold uppercase tracking-wider text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-md">Peserta Didik</span>
-                                <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
-                            </div>
-                            <h3 class="text-base font-bold text-slate-900">Siswa (Ahmad Fauzan)</h3>
-                            <p class="mt-2 text-xs text-slate-500 leading-relaxed">
-                                Baca materi pelajaran, tandai progres, kumpulkan tugas online, ikuti ujian CBT, dan akses Kartu Pelajar (KTS).
-                            </p>
-                            <div class="mt-4 p-3 bg-white rounded-xl border border-slate-100 text-xs font-mono space-y-1">
-                                <div class="text-slate-500 text-[11px]">Email:</div>
-                                <div class="font-semibold text-slate-800 break-all">student@school.test</div>
-                            </div>
-                        </div>
-                        <a href="{{ route('login') }}" class="mt-5 inline-flex items-center justify-center w-full py-2 px-3 text-xs font-semibold rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 transition">
-                            Login Siswa &rarr;
-                        </a>
-                    </div>
-
-                    <!-- Card 4: Parent -->
-                    <div class="rounded-2xl border border-slate-200 bg-slate-50/70 p-6 flex flex-col justify-between hover:border-amber-300 hover:bg-white transition shadow-sm hover:shadow-md">
-                        <div>
-                            <div class="flex items-center justify-between mb-4">
-                                <span class="text-xs font-bold uppercase tracking-wider text-amber-600 bg-amber-50 px-2.5 py-1 rounded-md">Wali Murid</span>
-                                <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
-                            </div>
-                            <h3 class="text-base font-bold text-slate-900">Orang Tua (Hendra F.)</h3>
-                            <p class="mt-2 text-xs text-slate-500 leading-relaxed">
-                                Pantau riwayat kehadiran, nilai rapor, tugas, dan progres belajar anak secara aman dan transparan per anak.
-                            </p>
-                            <div class="mt-4 p-3 bg-white rounded-xl border border-slate-100 text-xs font-mono space-y-1">
-                                <div class="text-slate-500 text-[11px]">Email:</div>
-                                <div class="font-semibold text-slate-800 break-all">parent@school.test</div>
-                            </div>
-                        </div>
-                        <a href="{{ route('login') }}" class="mt-5 inline-flex items-center justify-center w-full py-2 px-3 text-xs font-semibold rounded-lg bg-amber-600 text-white hover:bg-amber-700 transition">
-                            Login Orang Tua &rarr;
-                        </a>
-                    </div>
-                </div>
             </div>
+
         </section>
 
-        <!-- KTS VERIFICATION QUICK LOOKUP SECTION -->
-        <section id="verifikasi-kts" class="py-20 bg-slate-50/60 border-t border-slate-200">
-            <div class="mx-auto max-w-4xl px-6 lg:px-8 text-center">
-                <div class="inline-block text-xs font-bold uppercase tracking-widest text-indigo-600 mb-2">Validasi Identitas Resmi</div>
-                <h2 class="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
-                    Verifikasi Kartu Tanda Siswa (Digital KTS)
+
+        <!-- ===================================================== -->
+        <!-- DEMO -->
+        <!-- ===================================================== -->
+
+        <section
+            id="demo"
+            class="bg-slate-50 py-20 sm:py-24"
+        >
+
+            <div class="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8">
+
+                <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+
+                    <div class="max-w-2xl">
+
+                        <div class="text-xs font-bold uppercase tracking-[0.18em] text-indigo-600">
+                            Demo Account
+                        </div>
+
+                        <h2 class="mt-4 text-3xl font-bold tracking-[-0.03em] text-slate-950 sm:text-4xl">
+                            Jelajahi platform berdasarkan role.
+                        </h2>
+
+                        <p class="mt-4 text-base leading-7 text-slate-500">
+                            Gunakan akun demo berikut untuk melihat
+                            pengalaman pengguna pada masing-masing role.
+                        </p>
+
+                    </div>
+
+
+                    <div class="rounded-xl border border-slate-200 bg-white px-4 py-3 text-xs text-slate-500">
+
+                        Password:
+
+                        <code class="ml-1 rounded-md bg-slate-100 px-2 py-1 font-mono font-semibold text-slate-800">
+                            password
+                        </code>
+
+                    </div>
+
+                </div>
+
+
+                <div class="mt-10 flex flex-wrap gap-4">
+
+                    <!-- Admin -->
+                    <div class="flex w-full flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:w-[calc(50%-8px)] lg:w-[calc(25%-12px)]">
+
+                        <span class="w-fit rounded-md bg-indigo-50 px-2 py-1 text-[9px] font-bold uppercase tracking-wider text-indigo-700">
+                            Tata Usaha
+                        </span>
+
+                        <h3 class="mt-5 text-sm font-bold text-slate-950">
+                            Operator / Admin
+                        </h3>
+
+                        <p class="mt-2 min-h-[72px] text-sm leading-6 text-slate-500">
+                            Kelola data master siswa, guru,
+                            kelas, jadwal dan nilai.
+                        </p>
+
+                        <div class="mt-5 rounded-xl bg-slate-50 p-3">
+
+                            <div class="text-[9px] font-medium text-slate-400">
+                                Email
+                            </div>
+
+                            <div class="mt-1 break-all font-mono text-[11px] font-semibold text-slate-800">
+                                admin@school.test
+                            </div>
+
+                        </div>
+
+                        <a
+                            href="{{ route('login') }}"
+                            class="mt-4 inline-flex h-10 items-center justify-center rounded-xl bg-slate-950 text-xs font-semibold text-white transition hover:bg-slate-800"
+                        >
+                            Login Admin
+                        </a>
+
+                    </div>
+
+
+                    <!-- Teacher -->
+                    <div class="flex w-full flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:w-[calc(50%-8px)] lg:w-[calc(25%-12px)]">
+
+                        <span class="w-fit rounded-md bg-violet-50 px-2 py-1 text-[9px] font-bold uppercase tracking-wider text-violet-700">
+                            Pendidik
+                        </span>
+
+                        <h3 class="mt-5 text-sm font-bold text-slate-950">
+                            Guru
+                        </h3>
+
+                        <p class="mt-2 min-h-[72px] text-sm leading-6 text-slate-500">
+                            Kelola materi, tugas, kuis,
+                            ujian dan nilai siswa.
+                        </p>
+
+                        <div class="mt-5 rounded-xl bg-slate-50 p-3">
+
+                            <div class="text-[9px] font-medium text-slate-400">
+                                Email
+                            </div>
+
+                            <div class="mt-1 break-all font-mono text-[11px] font-semibold text-slate-800">
+                                teacher@school.test
+                            </div>
+
+                        </div>
+
+                        <a
+                            href="{{ route('login') }}"
+                            class="mt-4 inline-flex h-10 items-center justify-center rounded-xl bg-slate-950 text-xs font-semibold text-white transition hover:bg-slate-800"
+                        >
+                            Login Guru
+                        </a>
+
+                    </div>
+
+
+                    <!-- Student -->
+                    <div class="flex w-full flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:w-[calc(50%-8px)] lg:w-[calc(25%-12px)]">
+
+                        <span class="w-fit rounded-md bg-emerald-50 px-2 py-1 text-[9px] font-bold uppercase tracking-wider text-emerald-700">
+                            Peserta Didik
+                        </span>
+
+                        <h3 class="mt-5 text-sm font-bold text-slate-950">
+                            Siswa
+                        </h3>
+
+                        <p class="mt-2 min-h-[72px] text-sm leading-6 text-slate-500">
+                            Akses materi, tugas, ujian,
+                            progres dan Kartu Tanda Siswa.
+                        </p>
+
+                        <div class="mt-5 rounded-xl bg-slate-50 p-3">
+
+                            <div class="text-[9px] font-medium text-slate-400">
+                                Email
+                            </div>
+
+                            <div class="mt-1 break-all font-mono text-[11px] font-semibold text-slate-800">
+                                student@school.test
+                            </div>
+
+                        </div>
+
+                        <a
+                            href="{{ route('login') }}"
+                            class="mt-4 inline-flex h-10 items-center justify-center rounded-xl bg-slate-950 text-xs font-semibold text-white transition hover:bg-slate-800"
+                        >
+                            Login Siswa
+                        </a>
+
+                    </div>
+
+
+                    <!-- Parent -->
+                    <div class="flex w-full flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:w-[calc(50%-8px)] lg:w-[calc(25%-12px)]">
+
+                        <span class="w-fit rounded-md bg-amber-50 px-2 py-1 text-[9px] font-bold uppercase tracking-wider text-amber-700">
+                            Wali Murid
+                        </span>
+
+                        <h3 class="mt-5 text-sm font-bold text-slate-950">
+                            Orang Tua
+                        </h3>
+
+                        <p class="mt-2 min-h-[72px] text-sm leading-6 text-slate-500">
+                            Pantau kehadiran, nilai, tugas
+                            dan perkembangan belajar anak.
+                        </p>
+
+                        <div class="mt-5 rounded-xl bg-slate-50 p-3">
+
+                            <div class="text-[9px] font-medium text-slate-400">
+                                Email
+                            </div>
+
+                            <div class="mt-1 break-all font-mono text-[11px] font-semibold text-slate-800">
+                                parent@school.test
+                            </div>
+
+                        </div>
+
+                        <a
+                            href="{{ route('login') }}"
+                            class="mt-4 inline-flex h-10 items-center justify-center rounded-xl bg-slate-950 text-xs font-semibold text-white transition hover:bg-slate-800"
+                        >
+                            Login Orang Tua
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ===================================================== -->
+        <!-- KTS VERIFICATION -->
+        <!-- ===================================================== -->
+
+        <section
+            id="verifikasi"
+            class="border-y border-slate-200 bg-white py-20 sm:py-24"
+        >
+
+            <div class="mx-auto w-full max-w-5xl px-5 sm:px-6 lg:px-8">
+
+                <div class="flex flex-col gap-10 lg:flex-row lg:items-center lg:gap-16">
+
+                    <div class="w-full lg:w-5/12">
+
+                        <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-600 text-white">
+
+                            <svg
+                                class="h-5 w-5"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                                stroke-width="1.8"
+                            >
+                                <rect
+                                    x="3"
+                                    y="4"
+                                    width="18"
+                                    height="16"
+                                    rx="2"
+                                />
+
+                                <path
+                                    stroke-linecap="round"
+                                    d="M7 8h4M7 12h3"
+                                />
+
+                                <circle
+                                    cx="16"
+                                    cy="11"
+                                    r="2.5"
+                                />
+
+                            </svg>
+
+                        </div>
+
+
+                        <div class="mt-6 text-xs font-bold uppercase tracking-[0.18em] text-indigo-600">
+                            Public Verification
+                        </div>
+
+
+                        <h2 class="mt-3 text-3xl font-bold tracking-[-0.03em] text-slate-950">
+                            Verifikasi Kartu Tanda Siswa
+                        </h2>
+
+
+                        <p class="mt-4 text-sm leading-6 text-slate-500">
+                            Validasi identitas siswa menggunakan
+                            Nomor Induk Siswa tanpa harus masuk
+                            ke dashboard internal.
+                        </p>
+
+                    </div>
+
+
+                    <!-- Form -->
+                    <div class="w-full lg:w-7/12">
+
+                        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-5 sm:p-6">
+
+                            <div class="rounded-xl border border-slate-200 bg-white p-5">
+
+                                <div class="flex items-center justify-between gap-4">
+
+                                    <div>
+
+                                        <div class="text-sm font-bold text-slate-950">
+                                            Cek data siswa
+                                        </div>
+
+                                        <div class="mt-1 text-xs text-slate-400">
+                                            Masukkan Nomor Induk Siswa
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-50">
+
+                                        <svg
+                                            class="h-4 w-4 text-emerald-600"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                        >
+                                            <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                d="M5 13l4 4L19 7"
+                                            />
+                                        </svg>
+
+                                    </div>
+
+                                </div>
+
+
+                                <form
+                                    class="mt-5 flex flex-col gap-3 sm:flex-row"
+                                    onsubmit="event.preventDefault(); var nis = document.getElementById('kts_token').value.trim(); if (nis) { window.location.href = '{{ url('/verify/student') }}/' + encodeURIComponent(nis); }"
+                                >
+
+                                    <input
+                                        type="text"
+                                        id="kts_token"
+                                        value="202401001"
+                                        placeholder="Contoh: 202401001"
+                                        required
+                                        class="h-11 min-w-0 flex-1 rounded-xl border border-slate-200 bg-slate-50 px-4 text-sm font-medium text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-500/10"
+                                    >
+
+
+                                    <button
+                                        type="submit"
+                                        class="inline-flex h-11 shrink-0 items-center justify-center rounded-xl bg-slate-950 px-6 text-sm font-semibold text-white transition hover:bg-slate-800"
+                                    >
+                                        Verifikasi
+                                    </button>
+
+                                </form>
+
+
+                                <div class="mt-5 border-t border-slate-100 pt-4">
+
+                                    <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                                        Sample NIS
+                                    </div>
+
+
+                                    <div class="mt-2 flex flex-wrap gap-2">
+
+                                        <button
+                                            type="button"
+                                            onclick="document.getElementById('kts_token').value='202401001'"
+                                            class="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-[10px] font-semibold text-slate-600 transition hover:border-indigo-200 hover:text-indigo-600"
+                                        >
+                                            202401001
+                                        </button>
+
+
+                                        <button
+                                            type="button"
+                                            onclick="document.getElementById('kts_token').value='202401002'"
+                                            class="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-[10px] font-semibold text-slate-600 transition hover:border-indigo-200 hover:text-indigo-600"
+                                        >
+                                            202401002
+                                        </button>
+
+
+                                        <button
+                                            type="button"
+                                            onclick="document.getElementById('kts_token').value='202401003'"
+                                            class="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-[10px] font-semibold text-slate-600 transition hover:border-indigo-200 hover:text-indigo-600"
+                                        >
+                                            202401003
+                                        </button>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ===================================================== -->
+        <!-- CTA -->
+        <!-- ===================================================== -->
+
+        <section class="relative overflow-hidden bg-slate-950 py-20 sm:py-24">
+
+            <div class="pointer-events-none absolute left-1/2 top-[-250px] h-[600px] w-[800px] -translate-x-1/2 rounded-full bg-indigo-600/20 blur-3xl"></div>
+
+
+            <div class="relative mx-auto w-full max-w-3xl px-5 text-center sm:px-6">
+
+                <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-white text-sm font-bold text-slate-950">
+                    S
+                </div>
+
+
+                <div class="mt-6 text-xs font-bold uppercase tracking-[0.2em] text-indigo-300">
+                    SIAKAD + LMS
+                </div>
+
+
+                <h2 class="mt-4 text-3xl font-bold tracking-[-0.03em] text-white sm:text-4xl">
+                    Satu platform untuk sekolah yang lebih terhubung.
                 </h2>
-                <p class="mt-3 text-slate-600 text-sm sm:text-base max-w-2xl mx-auto">
-                    Setiap Kartu Tanda Siswa dilengkapi QR Code yang mengarah ke tautan verifikasi publik untuk memastikan keabsahan data siswa tanpa membocorkan data rahasia.
+
+
+                <p class="mx-auto mt-5 max-w-xl text-sm leading-7 text-slate-400 sm:text-base">
+                    Kelola akademik, pembelajaran, evaluasi,
+                    dan aktivitas sekolah dari satu sistem.
                 </p>
 
-                <div class="mt-8 max-w-xl mx-auto bg-white rounded-2xl p-6 shadow-md border border-slate-200 text-left">
-                    <form onsubmit="event.preventDefault(); var nis = document.getElementById('kts_token').value.trim(); if(nis) window.location.href = '{{ url('/verify/student') }}/' + encodeURIComponent(nis);" class="flex flex-col sm:flex-row gap-3">
-                        <div class="flex-1">
-                            <label for="kts_token" class="sr-only">Nomor Induk Siswa (NIS)</label>
-                            <input type="text" id="kts_token" placeholder="Masukkan NIS (contoh: 202401001)" value="202401001" required
-                                   class="w-full px-4 py-2.5 text-sm rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition">
-                        </div>
-                        <button type="submit" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-sm transition shadow-sm flex items-center justify-center gap-2">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                            <span>Cek Validitas</span>
-                        </button>
-                    </form>
-                    <div class="mt-4 flex flex-wrap items-center gap-2 text-xs text-slate-500">
-                        <span class="font-medium">Sampel NIS Terdaftar:</span>
-                        <button type="button" onclick="document.getElementById('kts_token').value='202401001'" class="underline hover:text-indigo-600">202401001 (Ahmad Fauzan)</button> &bull;
-                        <button type="button" onclick="document.getElementById('kts_token').value='202401002'" class="underline hover:text-indigo-600">202401002 (Bella Safira)</button> &bull;
-                        <button type="button" onclick="document.getElementById('kts_token').value='202401003'" class="underline hover:text-indigo-600">202401003 (Dimas Pratama)</button>
-                    </div>
-                </div>
-            </div>
-        </section>
 
-        <!-- CTA SECTION -->
-        <section class="bg-slate-950 py-20 text-center text-white">
-            <div class="mx-auto max-w-4xl px-6 lg:px-8">
-                <h2 class="text-3xl font-bold tracking-tight sm:text-4xl">Mulai gunakan SIAKAD + LMS sekarang</h2>
-                <p class="mx-auto mt-4 max-w-xl text-slate-400 text-sm sm:text-base">
-                    Tingkatkan efisiensi dan kualitas pembelajaran digital di sekolah Anda melalui satu platform terpadu.
-                </p>
                 <div class="mt-8">
+
                     @auth
-                        <a href="{{ url('/dashboard') }}" class="inline-flex h-12 items-center justify-center rounded-xl bg-white px-8 text-sm font-semibold text-slate-950 transition hover:bg-slate-100 shadow-lg">
+
+                        <a
+                            href="{{ url('/dashboard') }}"
+                            class="inline-flex h-12 items-center rounded-xl bg-white px-7 text-sm font-semibold text-slate-950 transition hover:bg-slate-100"
+                        >
                             Buka Dashboard
                         </a>
+
                     @else
+
                         @if (Route::has('login'))
-                            <a href="{{ route('login') }}" class="inline-flex h-12 items-center justify-center rounded-xl bg-white px-8 text-sm font-semibold text-slate-950 transition hover:bg-slate-100 shadow-lg">
+
+                            <a
+                                href="{{ route('login') }}"
+                                class="inline-flex h-12 items-center rounded-xl bg-white px-7 text-sm font-semibold text-slate-950 transition hover:bg-slate-100"
+                            >
                                 Masuk ke Sistem
                             </a>
+
                         @endif
+
                     @endauth
+
                 </div>
+
             </div>
+
         </section>
+
     </main>
+
 
     <!-- ========================================================= -->
     <!-- FOOTER -->
     <!-- ========================================================= -->
-    <footer class="bg-slate-950 border-t border-slate-800/80">
-        <div class="mx-auto max-w-7xl px-6 py-8 lg:px-8">
-            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+
+    <footer class="border-t border-slate-800 bg-slate-950">
+
+        <div class="mx-auto flex w-full max-w-7xl flex-col gap-5 px-5 py-8 sm:px-6 md:flex-row md:items-center md:justify-between lg:px-8">
+
+            <div class="flex items-center gap-3">
+
+                <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-white text-xs font-bold text-slate-950">
+                    S
+                </div>
+
                 <div>
-                    <div class="text-sm font-bold text-white">SIAKAD + LMS</div>
-                    <div class="mt-1 text-xs text-slate-400">SMA Nusantara Digital</div>
+
+                    <div class="text-xs font-bold text-white">
+                        SIAKAD + LMS
+                    </div>
+
+                    <div class="mt-0.5 text-[10px] text-slate-500">
+                        SMA Nusantara Digital
+                    </div>
+
                 </div>
-                <div class="text-xs text-slate-400">
-                    © {{ date('Y') }} SMA Nusantara Digital. All rights reserved.
-                </div>
+
             </div>
+
+
+            <div class="text-[11px] text-slate-500">
+                © {{ date('Y') }} SMA Nusantara Digital. All rights reserved.
+            </div>
+
         </div>
+
     </footer>
 
 </body>

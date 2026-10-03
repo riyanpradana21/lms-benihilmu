@@ -11,7 +11,10 @@ use App\Http\Controllers\Admin\SemesterController;
 use App\Http\Controllers\Admin\StudentController;
 use App\Http\Controllers\Admin\SubjectController;
 use App\Http\Controllers\Admin\TeacherController;
+use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\ContentMediaController;
+use App\Http\Controllers\ExamScheduleController;
 use App\Http\Controllers\LearningController;
 use App\Http\Controllers\Parent\ParentPortalController;
 use App\Http\Controllers\RoleDashboardController;
@@ -19,8 +22,11 @@ use App\Http\Controllers\Student\StudentCourseController;
 use App\Http\Controllers\Student\StudentKtsController;
 use App\Http\Controllers\Student\StudentQuizController;
 use App\Http\Controllers\StudentVerificationController;
+use App\Http\Controllers\Teacher\TeacherAssignmentController;
 use App\Http\Controllers\Teacher\TeacherAttendanceController;
+use App\Http\Controllers\Teacher\TeacherCourseController;
 use App\Http\Controllers\Teacher\TeacherGradeController;
+use App\Http\Controllers\Teacher\TeacherQuestionBankController;
 use App\Http\Controllers\Teacher\TeacherQuizController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -43,10 +49,20 @@ Route::get('/verify/student/{token}', [StudentVerificationController::class, 've
 
 Route::middleware('auth')->group(function (): void {
     Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard');
+    Route::get('/content-media/{media}', [ContentMediaController::class, 'show'])->name('content.media.show');
 
     // Super Admin & Admin
     Route::middleware('role:super_admin|admin')->prefix('admin')->name('admin.')->group(function (): void {
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+        Route::get('/announcements', [AnnouncementController::class, 'index'])->name('announcements.index');
+        Route::post('/announcements', [AnnouncementController::class, 'store'])->name('announcements.store');
+        Route::put('/announcements/{announcement}', [AnnouncementController::class, 'update'])->name('announcements.update');
+        Route::delete('/announcements/{announcement}', [AnnouncementController::class, 'destroy'])->name('announcements.destroy');
+        Route::get('/exam-schedules', [ExamScheduleController::class, 'index'])->name('exam-schedules.index');
+        Route::post('/exam-schedules', [ExamScheduleController::class, 'store'])->name('exam-schedules.store');
+        Route::put('/exam-schedules/{examSchedule}', [ExamScheduleController::class, 'update'])->name('exam-schedules.update');
+        Route::delete('/exam-schedules/{examSchedule}', [ExamScheduleController::class, 'destroy'])->name('exam-schedules.destroy');
+        Route::get('/schedules/print', [ScheduleController::class, 'print'])->name('schedules.print');
 
         Route::get('/academic-years', [AcademicYearController::class, 'index'])->name('academic-years.index');
         Route::post('/academic-years', [AcademicYearController::class, 'store'])->name('academic-years.store');
@@ -79,15 +95,48 @@ Route::middleware('auth')->group(function (): void {
     // Teacher
     Route::middleware('role:teacher')->prefix('teacher')->name('teacher.')->group(function (): void {
         Route::get('/dashboard', [RoleDashboardController::class, 'index'])->defaults('role', 'teacher')->name('dashboard');
-        Route::get('/courses', [LearningController::class, 'teacherCourses'])->name('courses.index');
-        Route::get('/assignments', [LearningController::class, 'teacherAssignments'])->name('assignments.index');
-        Route::patch('/submissions/{submission}/grade', [LearningController::class, 'gradeAssignment'])->name('submissions.grade');
-        Route::get('/question-banks', [LearningController::class, 'teacherQuestionBanks'])->name('question-banks.index');
+        Route::get('/announcements', [AnnouncementController::class, 'index'])->name('announcements.index');
+        Route::post('/announcements', [AnnouncementController::class, 'store'])->name('announcements.store');
+        Route::put('/announcements/{announcement}', [AnnouncementController::class, 'update'])->name('announcements.update');
+        Route::delete('/announcements/{announcement}', [AnnouncementController::class, 'destroy'])->name('announcements.destroy');
+        Route::get('/exam-schedules', [ExamScheduleController::class, 'index'])->name('exam-schedules.index');
+        Route::post('/exam-schedules', [ExamScheduleController::class, 'store'])->name('exam-schedules.store');
+        Route::put('/exam-schedules/{examSchedule}', [ExamScheduleController::class, 'update'])->name('exam-schedules.update');
+        Route::delete('/exam-schedules/{examSchedule}', [ExamScheduleController::class, 'destroy'])->name('exam-schedules.destroy');
+        // Teacher Courses & Curriculum Management
+        Route::get('/courses', [TeacherCourseController::class, 'index'])->name('courses.index');
+        Route::get('/courses/{course}', [TeacherCourseController::class, 'show'])->name('courses.show');
+        Route::patch('/courses/{course}/toggle-status', [TeacherCourseController::class, 'toggleStatus'])->name('courses.toggle-status');
+        Route::post('/courses/{course}/chapters', [TeacherCourseController::class, 'storeChapter'])->name('courses.chapters.store');
+        Route::delete('/courses/{course}/chapters/{chapter}', [TeacherCourseController::class, 'destroyChapter'])->name('courses.chapters.destroy');
+        Route::post('/courses/{course}/chapters/{chapter}/topics', [TeacherCourseController::class, 'storeTopic'])->name('courses.topics.store');
+        Route::delete('/courses/{course}/chapters/{chapter}/topics/{topic}', [TeacherCourseController::class, 'destroyTopic'])->name('courses.topics.destroy');
+        Route::post('/courses/{course}/topics/{topic}/lessons', [TeacherCourseController::class, 'storeLesson'])->name('courses.lessons.store');
+        Route::delete('/courses/{course}/topics/{topic}/lessons/{lesson}', [TeacherCourseController::class, 'destroyLesson'])->name('courses.lessons.destroy');
+
+        // Teacher Assignments & Tasks
+        Route::get('/assignments', [TeacherAssignmentController::class, 'index'])->name('assignments.index');
+        Route::post('/assignments', [TeacherAssignmentController::class, 'store'])->name('assignments.store');
+        Route::get('/assignments/{assignment}', [TeacherAssignmentController::class, 'show'])->name('assignments.show');
+        Route::delete('/assignments/{assignment}', [TeacherAssignmentController::class, 'destroy'])->name('assignments.destroy');
+        Route::patch('/submissions/{submission}/grade', [TeacherAssignmentController::class, 'grade'])->name('submissions.grade');
+        // Teacher Question Banks
+        Route::get('/question-banks', [TeacherQuestionBankController::class, 'index'])->name('question-banks.index');
+        Route::post('/question-banks', [TeacherQuestionBankController::class, 'store'])->name('question-banks.store');
+        Route::get('/question-banks/{questionBank}', [TeacherQuestionBankController::class, 'show'])->name('question-banks.show');
+        Route::delete('/question-banks/{questionBank}', [TeacherQuestionBankController::class, 'destroy'])->name('question-banks.destroy');
+        Route::post('/question-banks/{questionBank}/questions', [TeacherQuestionBankController::class, 'storeQuestion'])->name('question-banks.questions.store');
+        Route::patch('/question-banks/{questionBank}/questions/{question}', [TeacherQuestionBankController::class, 'updateQuestion'])->name('question-banks.questions.update');
+        Route::delete('/question-banks/{questionBank}/questions/{question}', [TeacherQuestionBankController::class, 'destroyQuestion'])->name('question-banks.questions.destroy');
 
         // Teacher Quizzes & CBT
         Route::get('/quizzes', [TeacherQuizController::class, 'index'])->name('quizzes.index');
         Route::post('/quizzes', [TeacherQuizController::class, 'store'])->name('quizzes.store');
+        Route::get('/quizzes/{quiz}/questions', [TeacherQuizController::class, 'questions'])->name('quizzes.questions');
+        Route::post('/quizzes/{quiz}/questions/attach', [TeacherQuizController::class, 'attachQuestions'])->name('quizzes.questions.attach');
+        Route::delete('/quizzes/{quiz}/questions/{question}/detach', [TeacherQuizController::class, 'detachQuestion'])->name('quizzes.questions.detach');
         Route::get('/quizzes/{quiz}/attempts', [TeacherQuizController::class, 'attempts'])->name('quizzes.attempts');
+        Route::patch('/quizzes/{quiz}/attempts/{attempt}/open-access', [TeacherQuizController::class, 'openAccess'])->name('quizzes.attempts.open-access');
 
         // Teacher Attendance
         Route::get('/attendance', [TeacherAttendanceController::class, 'index'])->name('attendance.index');
@@ -105,6 +154,9 @@ Route::middleware('auth')->group(function (): void {
     Route::middleware('role:student')->prefix('student')->name('student.')->group(function (): void {
         Route::get('/dashboard', [RoleDashboardController::class, 'index'])->defaults('role', 'student')->name('dashboard');
         Route::get('/schedule', [LearningController::class, 'studentSchedule'])->name('schedule');
+        Route::get('/schedule/print', [ScheduleController::class, 'studentPrint'])->name('schedule.print');
+        Route::get('/announcements', [AnnouncementController::class, 'index'])->name('announcements.index');
+        Route::get('/exam-schedules', [ExamScheduleController::class, 'studentIndex'])->name('exam-schedules.index');
         Route::get('/kts', [StudentKtsController::class, 'show'])->name('kts');
 
         // LMS Courses & Lessons
@@ -137,6 +189,8 @@ Route::middleware('auth')->group(function (): void {
     // Parent
     Route::middleware('role:parent')->prefix('parent')->name('parent.')->group(function (): void {
         Route::get('/dashboard', [RoleDashboardController::class, 'index'])->defaults('role', 'parent')->name('dashboard');
+        Route::get('/announcements', [AnnouncementController::class, 'index'])->name('announcements.index');
+        Route::get('/exam-schedules', [ExamScheduleController::class, 'parentIndex'])->name('exam-schedules.index');
         Route::get('/children', [ParentPortalController::class, 'children'])->name('children');
         Route::get('/attendance', [ParentPortalController::class, 'attendance'])->name('attendance.index');
         Route::get('/grades', [ParentPortalController::class, 'grades'])->name('grades.index');

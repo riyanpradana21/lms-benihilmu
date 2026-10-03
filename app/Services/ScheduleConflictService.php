@@ -18,7 +18,8 @@ class ScheduleConflictService
         string $endTime,
         int $schoolClassId,
         int $teacherId,
-        ?int $ignoreScheduleId = null
+        ?int $ignoreScheduleId = null,
+        ?string $room = null
     ): array {
         // 1. Validate times
         if ($startTime >= $endTime) {
@@ -33,14 +34,8 @@ class ScheduleConflictService
             ->where('day_of_week', $dayOfWeek)
             ->where('school_class_id', $schoolClassId)
             ->when($ignoreScheduleId, fn ($q) => $q->where('id', '!=', $ignoreScheduleId))
-            ->where(function ($query) use ($startTime, $endTime): void {
-                $query->whereBetween('start_time', [$startTime, $endTime])
-                    ->orWhereBetween('end_time', [$startTime, $endTime])
-                    ->orWhere(function ($q) use ($startTime, $endTime): void {
-                        $q->where('start_time', '<=', $startTime)
-                            ->where('end_time', '>=', $endTime);
-                    });
-            })
+            ->where('start_time', '<', $endTime)
+            ->where('end_time', '>', $startTime)
             ->with(['subject', 'teacher.user'])
             ->first();
 
@@ -62,14 +57,8 @@ class ScheduleConflictService
             ->where('day_of_week', $dayOfWeek)
             ->where('teacher_id', $teacherId)
             ->when($ignoreScheduleId, fn ($q) => $q->where('id', '!=', $ignoreScheduleId))
-            ->where(function ($query) use ($startTime, $endTime): void {
-                $query->whereBetween('start_time', [$startTime, $endTime])
-                    ->orWhereBetween('end_time', [$startTime, $endTime])
-                    ->orWhere(function ($q) use ($startTime, $endTime): void {
-                        $q->where('start_time', '<=', $startTime)
-                            ->where('end_time', '>=', $endTime);
-                    });
-            })
+            ->where('start_time', '<', $endTime)
+            ->where('end_time', '>', $startTime)
             ->with(['schoolClass', 'subject'])
             ->first();
 
@@ -84,6 +73,33 @@ class ScheduleConflictService
                     substr($teacherConflict->end_time, 0, 5)
                 ),
             ];
+        }
+
+        // 4. Check room conflict if a specific room is assigned
+        $trimmedRoom = trim($room ?? '');
+        if ($trimmedRoom !== '') {
+            $roomConflict = Schedule::where('academic_year_id', $academicYearId)
+                ->where('day_of_week', $dayOfWeek)
+                ->where('room', $trimmedRoom)
+                ->when($ignoreScheduleId, fn ($q) => $q->where('id', '!=', $ignoreScheduleId))
+                ->where('start_time', '<', $endTime)
+                ->where('end_time', '>', $startTime)
+                ->with(['schoolClass', 'subject'])
+                ->first();
+
+            if ($roomConflict) {
+                return [
+                    'has_conflict' => true,
+                    'message' => sprintf(
+                        'Bentrok ruangan: Ruangan "%s" sudah dijadwalkan untuk kelas "%s" pada mapel "%s" (%s - %s).',
+                        $trimmedRoom,
+                        $roomConflict->schoolClass?->name ?? 'N/A',
+                        $roomConflict->subject?->name ?? 'N/A',
+                        substr($roomConflict->start_time, 0, 5),
+                        substr($roomConflict->end_time, 0, 5)
+                    ),
+                ];
+            }
         }
 
         return [

@@ -4,6 +4,7 @@
     $isTeacher = $user->hasRole('teacher');
     $isStudent = $user->hasRole('student');
     $isParent = $user->hasRole('parent');
+    $isHomeroomTeacher = $isTeacher && \App\Models\SchoolClass::where('homeroom_teacher_id', $user->id)->exists();
 @endphp
 
 <div class="space-y-6 text-sm">
@@ -19,6 +20,8 @@
         <div>
             <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2 px-2">Struktur SIAKAD</div>
             <div class="space-y-1">
+                <a href="{{ route('admin.announcements.index') }}" class="block rounded-lg px-3 py-2 font-medium {{ request()->routeIs('admin.announcements.*') ? 'bg-indigo-50 text-indigo-700' : 'text-slate-600 hover:bg-slate-100' }}">Pengumuman</a>
+                <a href="{{ route('admin.exam-schedules.index') }}" class="block rounded-lg px-3 py-2 font-medium {{ request()->routeIs('admin.exam-schedules.*') ? 'bg-indigo-50 text-indigo-700' : 'text-slate-600 hover:bg-slate-100' }}">Jadwal Ujian Siswa</a>
                 <a href="{{ route('admin.academic-years.index') }}" class="flex items-center space-x-2.5 px-3 py-2 rounded-lg font-medium transition {{ request()->routeIs('admin.academic-years.*') ? 'bg-indigo-50 text-indigo-700' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
                     <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                     <span>Tahun Ajaran</span>
@@ -95,6 +98,8 @@
         <div>
             <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2 px-2">Menu Guru</div>
             <div class="space-y-1">
+                <a href="{{ route('teacher.announcements.index') }}" class="block rounded-lg px-3 py-2 font-medium {{ request()->routeIs('teacher.announcements.*') ? 'bg-indigo-50 text-indigo-700' : 'text-slate-600 hover:bg-slate-100' }}">Pengumuman Sekolah</a>
+                @if($isHomeroomTeacher)<a href="{{ route('teacher.exam-schedules.index') }}" class="block rounded-lg px-3 py-2 font-medium {{ request()->routeIs('teacher.exam-schedules.*') ? 'bg-indigo-50 text-indigo-700' : 'text-slate-600 hover:bg-slate-100' }}">Jadwal Ujian</a>@endif
                 <a href="{{ route('teacher.dashboard') }}" class="flex items-center space-x-2.5 px-3 py-2 rounded-lg font-medium transition {{ request()->routeIs('teacher.dashboard') ? 'bg-indigo-50 text-indigo-700' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
                     <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
                     <span>Dashboard Guru</span>
@@ -131,6 +136,8 @@
         <div>
             <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2 px-2">Menu Siswa</div>
             <div class="space-y-1">
+                <a href="{{ route('student.announcements.index') }}" class="block rounded-lg px-3 py-2 font-medium {{ request()->routeIs('student.announcements.*') ? 'bg-indigo-50 text-indigo-700' : 'text-slate-600 hover:bg-slate-100' }}">Pengumuman</a>
+                <a href="{{ route('student.exam-schedules.index') }}" class="block rounded-lg px-3 py-2 font-medium {{ request()->routeIs('student.exam-schedules.*') ? 'bg-indigo-50 text-indigo-700' : 'text-slate-600 hover:bg-slate-100' }}">Jadwal Ujian</a>
                 <a href="{{ route('student.dashboard') }}" class="flex items-center space-x-2.5 px-3 py-2 rounded-lg font-medium transition {{ request()->routeIs('student.dashboard') ? 'bg-indigo-50 text-indigo-700' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
                     <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
                     <span>Dashboard Siswa</span>
@@ -171,6 +178,8 @@
         <div>
             <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2 px-2">Portal Orang Tua</div>
             <div class="space-y-1">
+                <a href="{{ route('parent.announcements.index') }}" class="block rounded-lg px-3 py-2 font-medium {{ request()->routeIs('parent.announcements.*') ? 'bg-indigo-50 text-indigo-700' : 'text-slate-600 hover:bg-slate-100' }}">Pengumuman</a>
+                <a href="{{ route('parent.exam-schedules.index') }}" class="block rounded-lg px-3 py-2 font-medium {{ request()->routeIs('parent.exam-schedules.*') ? 'bg-indigo-50 text-indigo-700' : 'text-slate-600 hover:bg-slate-100' }}">Jadwal Ujian Anak</a>
                 <a href="{{ route('parent.dashboard') }}" class="flex items-center space-x-2.5 px-3 py-2 rounded-lg font-medium transition {{ request()->routeIs('parent.dashboard') ? 'bg-indigo-50 text-indigo-700' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
                     <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
                     <span>Ringkasan Anak</span>

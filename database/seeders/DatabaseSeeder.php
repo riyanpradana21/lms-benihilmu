@@ -35,13 +35,14 @@ use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Schema;
 use Spatie\Permission\Models\Role;
 
 class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        Schema::disableForeignKeyConstraints();
         DB::table('report_cards')->truncate();
         DB::table('student_grades')->truncate();
         DB::table('grade_components')->truncate();
@@ -85,7 +86,7 @@ class DatabaseSeeder extends Seeder
         DB::table('model_has_permissions')->truncate();
         DB::table('role_has_permissions')->truncate();
         DB::table('users')->truncate();
-        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        Schema::enableForeignKeyConstraints();
         // 1. Roles
         $superAdminRole = Role::firstOrCreate(['name' => 'super_admin']);
         $adminRole = Role::firstOrCreate(['name' => 'admin']);

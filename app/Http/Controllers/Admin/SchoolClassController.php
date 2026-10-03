@@ -44,10 +44,44 @@ class SchoolClassController extends Controller
             'capacity' => ['required', 'integer', 'min:5', 'max:50'],
         ]);
 
+        if (! empty($validated['homeroom_teacher_id'])) {
+            abort_unless(User::role('teacher')->whereKey($validated['homeroom_teacher_id'])->exists(), 422, 'Wali kelas harus merupakan akun guru.');
+        }
+
         $class = SchoolClass::create($validated);
         AuditLog::log('create_class', $class, null, $class->toArray());
 
         return redirect()->route('admin.classes.index')->with('success', 'Kelas berhasil dibuat.');
+    }
+
+    public function update(Request $request, SchoolClass $class): RedirectResponse
+    {
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'grade_level' => ['required', 'string', 'max:20'],
+            'academic_year_id' => ['required', 'exists:academic_years,id'],
+            'homeroom_teacher_id' => ['nullable', 'exists:users,id'],
+            'room' => ['nullable', 'string', 'max:100'],
+            'capacity' => ['required', 'integer', 'min:5', 'max:50'],
+        ]);
+
+        if (! empty($validated['homeroom_teacher_id'])) {
+            abort_unless(User::role('teacher')->whereKey($validated['homeroom_teacher_id'])->exists(), 422, 'Wali kelas harus merupakan akun guru.');
+        }
+
+        if ($class->students()->count() > $validated['capacity']) {
+            return back()->withInput()->with('error', 'Kapasitas tidak boleh lebih kecil dari jumlah siswa yang sudah terdaftar.');
+        }
+
+        if ($class->academic_year_id !== (int) $validated['academic_year_id'] && $class->students()->exists()) {
+            return back()->withInput()->with('error', 'Tahun ajaran kelas tidak dapat diganti selama siswa masih terdaftar.');
+        }
+
+        $oldValues = $class->toArray();
+        $class->update($validated);
+        AuditLog::log('update_class', $class, $oldValues, $class->fresh()->toArray());
+
+        return redirect()->route('admin.classes.index')->with('success', 'Data kelas berhasil diperbarui.');
     }
 
     public function show(SchoolClass $class): View

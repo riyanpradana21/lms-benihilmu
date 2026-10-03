@@ -10,6 +10,17 @@
         </div>
     </div>
 
+    <form method="GET" class="flex flex-wrap items-center gap-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+        <label for="class_id" class="text-sm font-medium text-slate-700">Filter kelas</label>
+        <select id="class_id" name="class_id" class="rounded-lg border-slate-300 text-sm" onchange="this.form.submit()">
+            <option value="">Semua kelas</option>
+            @foreach($classes as $class)
+                <option value="{{ $class->id }}" @selected($classId === $class->id)>{{ $class->name }}</option>
+            @endforeach
+        </select>
+        @if($classId)<a href="{{ route('admin.report-cards.index') }}" class="text-sm font-semibold text-indigo-700">Hapus filter</a>@endif
+    </form>
+
     <!-- Table of Report Cards -->
     <div class="rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-sm">
         <div class="overflow-x-auto">
@@ -34,11 +45,11 @@
                             <td class="px-6 py-4 text-slate-600">{{ $rc->semester?->name }} ({{ $rc->semester?->academicYear?->name }})</td>
                             <td class="px-6 py-4">
                                 <span class="rounded-md bg-indigo-50 px-2 py-0.5 text-xs font-bold text-indigo-700">
-                                    Ke-{{ $rc->rank ?? 1 }}
+                                    {{ $rc->rank ? 'Ke-'.$rc->rank : '—' }}
                                 </span>
                             </td>
                             <td class="px-6 py-4 font-bold text-slate-800 text-sm">
-                                {{ $rc->gpa ?: 85.5 }}
+                                {{ $rc->gpa ?? '—' }}
                             </td>
                             <td class="px-6 py-4 text-right">
                                 <a href="{{ route('admin.report-cards.show', $rc) }}" class="inline-flex items-center gap-1.5 rounded-lg bg-indigo-600 px-3.5 py-1.5 text-xs font-semibold text-white shadow-sm hover:bg-indigo-700 transition">

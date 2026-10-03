@@ -7,18 +7,24 @@ use App\Models\Attendance;
 use App\Models\Course;
 use App\Models\Institution;
 use App\Models\ReportCard;
+use App\Models\SchoolClass;
 use App\Models\StudentGrade;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class ReportCardController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): View
     {
+        $classId = $request->integer('class_id') ?: null;
         $reportCards = ReportCard::with(['student.user', 'schoolClass', 'semester.academicYear'])
+            ->when($classId, fn ($query) => $query->where('school_class_id', $classId))
             ->latest()
-            ->paginate(15);
+            ->paginate(15)
+            ->withQueryString();
+        $classes = SchoolClass::orderBy('name')->get();
 
-        return view('admin.report_cards.index', compact('reportCards'));
+        return view('admin.report_cards.index', compact('reportCards', 'classes', 'classId'));
     }
 
     public function show(ReportCard $reportCard): View
@@ -49,17 +55,30 @@ class ReportCardController extends Controller
 
             $weightedScore = 0;
             $totalWeight = 0;
+            $componentScores = ['assignment' => null, 'quiz' => null, 'midterm' => null, 'final' => null];
+            $componentScoreValues = ['assignment' => [], 'quiz' => [], 'midterm' => [], 'final' => []];
 
             foreach ($components as $comp) {
                 $g = $courseGrades->firstWhere('grade_component_id', $comp->id);
                 if ($g) {
                     $weightedScore += ($g->score * ($comp->weight / 100));
                     $totalWeight += $comp->weight;
+                    if (array_key_exists($comp->type, $componentScores)) {
+                        $componentScoreValues[$comp->type][] = (float) $g->score;
+                    }
                 }
             }
 
-            $finalSubjectScore = $totalWeight > 0 ? round(($weightedScore / ($totalWeight / 100)), 1) : ($courseGrades->avg('score') ?: 80);
-            $predicate = $finalSubjectScore >= 88 ? 'A (Sangat Baik)' : ($finalSubjectScore >= 78 ? 'B (Baik)' : ($finalSubjectScore >= 68 ? 'C (Cukup)' : 'D (Kurang)'));
+            foreach ($componentScoreValues as $type => $scores) {
+                $componentScores[$type] = $scores === [] ? null : round(array_sum($scores) / count($scores), 1);
+            }
+
+            $finalSubjectScore = $totalWeight > 0
+                ? round(($weightedScore / ($totalWeight / 100)), 1)
+                : ($courseGrades->isNotEmpty() ? round((float) $courseGrades->avg('score'), 1) : null);
+            $predicate = $finalSubjectScore === null
+                ? 'Belum ada nilai'
+                : ($finalSubjectScore >= 88 ? 'A (Sangat Baik)' : ($finalSubjectScore >= 78 ? 'B (Baik)' : ($finalSubjectScore >= 68 ? 'C (Cukup)' : 'D (Kurang)')));
 
             $subjectScores[] = [
                 'code' => $course->subject?->code,
@@ -68,13 +87,16 @@ class ReportCardController extends Controller
                 'kkm' => 75,
                 'score' => $finalSubjectScore,
                 'predicate' => $predicate,
+                'components' => $componentScores,
             ];
 
-            $totalSum += $finalSubjectScore;
-            $courseCount++;
+            if ($finalSubjectScore !== null) {
+                $totalSum += $finalSubjectScore;
+                $courseCount++;
+            }
         }
 
-        $averageScore = $courseCount > 0 ? round($totalSum / $courseCount, 1) : $reportCard->gpa;
+        $averageScore = $courseCount > 0 ? round($totalSum / $courseCount, 1) : null;
 
         // Attendance stats
         $attendances = Attendance::where('student_id', $student->id)->get();

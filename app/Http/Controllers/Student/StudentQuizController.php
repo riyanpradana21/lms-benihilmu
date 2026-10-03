@@ -49,6 +49,8 @@ class StudentQuizController extends Controller
         $isEnrolled = $student->schoolClasses()->where('school_classes.id', $quiz->course->school_class_id)->exists();
         abort_unless($isEnrolled, 403, 'Anda tidak terdaftar di kelas untuk kuis ini.');
 
+        abort_unless($quiz->is_published || QuizAttempt::where('quiz_id', $quiz->id)->where('student_id', $student->id)->where('status', 'in_progress')->exists(), 404);
+
         $quiz->load(['course.subject', 'questions']);
 
         $attempts = QuizAttempt::where('quiz_id', $quiz->id)
@@ -68,7 +70,7 @@ class StudentQuizController extends Controller
 
         $canAttempt = false;
         if (! $activeAttempt) {
-            $count = $attempts->where('status', 'completed')->count();
+            $count = $attempts->whereIn('status', ['submitted', 'graded'])->count();
             $limitNotReached = ($quiz->attempt_limit <= 0) || ($count < $quiz->attempt_limit);
             $windowValid = (! $quiz->starts_at || now()->gte($quiz->starts_at)) &&
                            (! $quiz->ends_at || now()->lte($quiz->ends_at));
@@ -85,6 +87,7 @@ class StudentQuizController extends Controller
 
         $isEnrolled = $student->schoolClasses()->where('school_classes.id', $quiz->course->school_class_id)->exists();
         abort_unless($isEnrolled, 403, 'Anda tidak terdaftar di kelas untuk kuis ini.');
+        abort_unless($quiz->is_published, 404);
 
         // Check if an in_progress attempt already exists
         $activeAttempt = QuizAttempt::where('quiz_id', $quiz->id)
@@ -103,7 +106,7 @@ class StudentQuizController extends Controller
         // Verify attempt limit
         $completedAttempts = QuizAttempt::where('quiz_id', $quiz->id)
             ->where('student_id', $student->id)
-            ->where('status', 'completed')
+            ->whereIn('status', ['submitted', 'graded'])
             ->count();
 
         if ($quiz->attempt_limit > 0 && $completedAttempts >= $quiz->attempt_limit) {
@@ -120,11 +123,16 @@ class StudentQuizController extends Controller
 
         // Server-authoritative start & expiration timestamp
         $durationMinutes = $quiz->duration_minutes ?: 60;
+        $expiresAt = now()->addMinutes($durationMinutes);
+        if ($quiz->ends_at && $quiz->ends_at->isBefore($expiresAt)) {
+            $expiresAt = $quiz->ends_at;
+        }
+
         $attempt = QuizAttempt::create([
             'quiz_id' => $quiz->id,
             'student_id' => $student->id,
             'started_at' => now(),
-            'expires_at' => now()->addMinutes($durationMinutes),
+            'expires_at' => $expiresAt,
             'status' => 'in_progress',
             'score' => 0,
         ]);
@@ -138,8 +146,13 @@ class StudentQuizController extends Controller
         abort_unless($student, 403, 'Akses khusus siswa.');
         abort_unless($attempt->student_id === $student->id && $attempt->quiz_id === $quiz->id, 403);
 
-        if ($attempt->status === 'completed') {
+        if (in_array($attempt->status, ['submitted', 'graded'], true)) {
             return redirect()->route('student.quizzes.result', [$quiz, $attempt]);
+        }
+
+        if ($attempt->is_locked) {
+            return redirect()->route('student.quizzes.show', $quiz)
+                ->with('error', 'Sesi ujian dikunci setelah beberapa peringatan. Hubungi guru pengampu untuk membuka kembali akses.');
         }
 
         // Server-authoritative expiration check
@@ -162,7 +175,7 @@ class StudentQuizController extends Controller
         $student = Auth::user()->student;
         abort_unless($student && $attempt->student_id === $student->id, 403);
 
-        if ($attempt->status !== 'in_progress' || $attempt->isExpired()) {
+        if ($attempt->status !== 'in_progress' || $attempt->is_locked || $attempt->isExpired()) {
             if ($attempt->isExpired()) {
                 $this->finalizeAttempt($attempt, true);
             }
@@ -174,6 +187,8 @@ class StudentQuizController extends Controller
             'question_id' => ['required', 'exists:questions,id'],
             'answer_text' => ['nullable', 'string', 'max:10000'],
         ]);
+
+        abort_unless($attempt->quiz->questions()->whereKey($validated['question_id'])->exists(), 422, 'Soal ini tidak termasuk dalam ujian Anda.');
 
         QuizAnswer::updateOrCreate(
             ['attempt_id' => $attempt->id, 'question_id' => $validated['question_id']],
@@ -210,12 +225,15 @@ class StudentQuizController extends Controller
         if ($quiz->auto_submit_on_violation && $quiz->violation_threshold > 0 && $totalViolations >= $quiz->violation_threshold) {
             $this->finalizeAttempt($attempt, true);
             $autoSubmitted = true;
+        } elseif ($quiz->violation_threshold > 0 && $totalViolations >= $quiz->violation_threshold) {
+            $attempt->update(['is_locked' => true]);
         }
 
         return response()->json([
             'success' => true,
             'violations_count' => $totalViolations,
             'auto_submitted' => $autoSubmitted,
+            'locked' => $attempt->fresh()->is_locked,
         ]);
     }
 
@@ -224,7 +242,12 @@ class StudentQuizController extends Controller
         $student = Auth::user()->student;
         abort_unless($student && $attempt->student_id === $student->id, 403);
 
-        if ($attempt->status !== 'completed') {
+        if ($attempt->is_locked) {
+            return redirect()->route('student.quizzes.show', $attempt->quiz)
+                ->with('error', 'Akses ujian sedang dikunci. Hubungi guru pengampu untuk membuka kembali ujian.');
+        }
+
+        if (! in_array($attempt->status, ['submitted', 'graded'], true)) {
             $this->finalizeAttempt($attempt, (bool) $request->input('auto', false));
         }
 
@@ -292,8 +315,15 @@ class StudentQuizController extends Controller
             // Normalizing score to 0 - 100 scale
             $finalScore = $maxPossibleScore > 0 ? round(($totalScoreEarned / $maxPossibleScore) * 100, 2) : 0;
 
+            if ($attempt->status !== 'in_progress') {
+                return;
+            }
+
+            $hasEssay = $quiz->questions->contains(fn ($q) => $q->type === 'essay');
+            $attemptStatus = $hasEssay ? 'submitted' : 'graded';
+
             $attempt->update([
-                'status' => 'completed',
+                'status' => $attemptStatus,
                 'submitted_at' => now(),
                 'score' => $finalScore,
                 'is_auto_submitted' => $isAuto,
